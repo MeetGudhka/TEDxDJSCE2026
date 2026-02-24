@@ -24,7 +24,7 @@ const RegisterPage = () => {
       });
 
       // Since we use no-cors, we can't check response.ok, but the submission will go through
-      alert("✅ Registration details submitted! (Please check the sheet)");
+      alert("✅ Your Details Submitted Successfully.!");
       // Reset form
       setFormData({
         fullName: "",
