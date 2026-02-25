@@ -81,7 +81,7 @@ const RegisterPage = () => {
               </div>
               <div className="detail-item">
                 <span className="label">DATE</span>
-                <span className="value">11-03-2026</span>
+                <span className="value">10-03-2026</span>
               </div>
             </div>
 
