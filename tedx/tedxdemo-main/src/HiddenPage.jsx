@@ -70,13 +70,14 @@ const HiddenPage = () => {
   // Filter students based on search query
   const filteredStudents = students.filter(student => {
     const query = searchQuery.toLowerCase();
+    const safe = (value) => (value ?? "").toString().toLowerCase();
     return (
-      student.fullName.toLowerCase().includes(query) ||
-      student.email.toLowerCase().includes(query) ||
-      student.rollNumber.toLowerCase().includes(query) ||
-      student.sapId.toLowerCase().includes(query) ||
-      student.branch.toLowerCase().includes(query) ||
-      student.contact.toLowerCase().includes(query)
+      safe(student.fullName).includes(query) ||
+      safe(student.email).includes(query) ||
+      safe(student.rollNumber).includes(query) ||
+      safe(student.sapId).includes(query) ||
+      safe(student.branch).includes(query) ||
+      safe(student.contact).includes(query)
     );
   });
 
