@@ -7,7 +7,7 @@ const teamData = {
             department: 'Leadership',
             members: [
                 { name: 'Shubh Selugar', role: 'Chairperson', img: '/res/Admin/Shubh Selugar.png', desc: 'Meet the heart and vision of TEDxDJSCE—our Chairperson, Shubh Selugar, whose leadership and passion inspire the team to bring ideas worth spreading to life!' },
-                { name: 'Eric Kurissery', role: 'Co-Chair Person', img: '/res/Admin/Eric Kuriserry.png', desc: 'Our Co-Chairperson, Eric Kurissery, guiding TEDxDJSCE with clarity and dedication, ensuring every initiative reaches its full potential.' },
+                { name: 'Eric Kurissery', role: 'Co-ChairPerson', img: '/res/Admin/Eric Kurissery.png', desc: 'Our Co-Chairperson, Eric Kurissery, guiding TEDxDJSCE with clarity and dedication, ensuring every initiative reaches its full potential.' },
                 { name: 'Manav Doshi', role: 'Administrator', img: '/res/Admin/Manav Doshi.png', desc: 'The organizational mastermind behind the scenes—Manav Doshi keeps everything on track, turning challenges into seamless execution.' }
             ]
         },
