@@ -56,7 +56,7 @@ const CountdownTimer = ({ targetDate = '2026-03-15T10:00:00' }) => {
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
                     <span className="title-line"></span>
-                    Second Sight Countdown
+                    TEDxDJSCE: THE QUIET THRESHOLD
                     <span className="title-line"></span>
                 </motion.h2>
 
