@@ -8,6 +8,7 @@ const HiddenPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Fetch students from backend
   useEffect(() => {
@@ -77,7 +78,9 @@ const HiddenPage = () => {
       safe(student.rollNumber).includes(query) ||
       safe(student.sapId).includes(query) ||
       safe(student.branch).includes(query) ||
-      safe(student.contact).includes(query)
+      safe(student.contact).includes(query) ||
+      safe(student.transactionId).includes(query) ||
+      safe(student.senderName).includes(query)
     );
   });
 
@@ -86,6 +89,15 @@ const HiddenPage = () => {
 
   return (
     <div className="hidden-page-container">
+
+      {selectedImage && (
+        <div className="image-modal-overlay" onClick={() => setSelectedImage(null)}>
+          <div className="image-modal-content" onClick={e => e.stopPropagation()}>
+            <button className="close-modal-btn" onClick={() => setSelectedImage(null)}>✕</button>
+            <img src={selectedImage} alt="Payment Screenshot" />
+          </div>
+        </div>
+      )}
 
       <div className="page-header">
         <h1 className="page-title">
@@ -145,9 +157,33 @@ const HiddenPage = () => {
                 <span className="info-label">Email</span>
                 <span className="info-value">{student.email}</span>
               </div>
+              <div className="info-row">
+                <span className="info-label">Sender Name</span>
+                <span className="info-value">{student.senderName || 'N/A'}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Txn ID</span>
+                <span className="info-value">{student.transactionId || 'N/A'}</span>
+              </div>
+            </div>
+
+            <div className="screenshot-section">
+              <button 
+                className="view-screenshot-btn" 
+                onClick={() => setSelectedImage(student.screenshot)}
+                disabled={!student.screenshot}
+              >
+                {student.screenshot ? '👁 View Screenshot' : 'No Screenshot Details'}
+              </button>
             </div>
 
             <div className="action-buttons">
+              <button
+                className={`action-btn btn-verify ${student.status === 'verified' ? 'active' : ''}`}
+                onClick={() => handleStatusChange(student._id, 'verified')}
+              >
+                <span>★ Verify</span>
+              </button>
               <button
                 className={`action-btn btn-in ${student.status === 'in' ? 'active' : ''}`}
                 onClick={() => handleStatusChange(student._id, 'in')}
