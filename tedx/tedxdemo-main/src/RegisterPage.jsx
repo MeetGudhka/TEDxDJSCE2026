@@ -2,24 +2,35 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./RegisterPage.css";
 
+const DEFAULT_FORM_DATA = {
+  fullName: "",
+  contact: "",
+  email: "",
+  collegeType: "",
+  collegeName: "",
+  branch: "",
+  rollNumber: "",
+  sapId: "",
+  ticketType: "",
+  amount: "",
+  transactionId: "",
+  senderName: "",
+};
+
+const TICKET_OPTIONS = [
+  { value: "classic", label: "Classic", amount: 100 },
+  { value: "premium", label: "Premium", amount: 200 },
+];
+
 const RegisterPage = () => {
   const [formData, setFormData] = useState(() => {
     const saved = localStorage.getItem('registrationProgress');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
+      try {
+        return { ...DEFAULT_FORM_DATA, ...JSON.parse(saved) };
+      } catch (e) {}
     }
-    return {
-      fullName: "",
-      contact: "",
-      email: "",
-      collegeType: "",
-      collegeName: "",
-      branch: "",
-      rollNumber: "",
-      sapId: "",
-      transactionId: "",
-      senderName: "",
-    };
+    return DEFAULT_FORM_DATA;
   });
 
   useEffect(() => {
@@ -92,7 +103,7 @@ const RegisterPage = () => {
       alert("Please fill all required personal and college details.");
       return;
     }
-    if (!formData.transactionId || !formData.transactionId.trim() || !formData.senderName || !formData.senderName.trim() || !screenshotData) {
+    if (!formData.ticketType || !formData.amount || !formData.transactionId || !formData.transactionId.trim() || !formData.senderName || !formData.senderName.trim() || !screenshotData) {
       alert("Please complete payment details and upload a screenshot.");
       return;
     }
@@ -108,18 +119,7 @@ const RegisterPage = () => {
       // Since we use no-cors, we can't check response.ok, but the submission will go through
       alert("✅ Your Details Submitted Successfully.!");
       // Reset form
-      setFormData({
-        fullName: "",
-        contact: "",
-        email: "",
-        collegeType: "",
-        collegeName: "",
-        branch: "",
-        rollNumber: "",
-        sapId: "",
-        transactionId: "",
-        senderName: "",
-      });
+      setFormData(DEFAULT_FORM_DATA);
       setScreenshotData(null);
       setScreenshotPreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -132,6 +132,16 @@ const RegisterPage = () => {
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleTicketSelect = (ticketValue) => {
+    const selectedTicket = TICKET_OPTIONS.find((option) => option.value === ticketValue);
+    if (!selectedTicket) return;
+    setFormData((prev) => ({
+      ...prev,
+      ticketType: selectedTicket.value,
+      amount: String(selectedTicket.amount),
+    }));
   };
 
   return (
@@ -269,6 +279,40 @@ const RegisterPage = () => {
                      <div className="section-divider">
                          <span>Payment Details</span>
                      </div>
+
+                     <div className="payment-qr-card">
+                        <div className="payment-qr-head">
+                          <span className="payment-qr-title">Scan QR To Pay</span>
+                          <span className="payment-qr-subtitle">Use any UPI app</span>
+                        </div>
+                        <img
+                          src="/meet_qr.jpeg"
+                          alt="TEDxDJSCE payment QR"
+                          className="payment-qr-image"
+                          loading="lazy"
+                        />
+                     </div>
+
+                     <div className="ticket-selector" style={{ "--index": 1 }}>
+                        <div className="ticket-title">Select Pass Type</div>
+                        <div className="ticket-options">
+                          {TICKET_OPTIONS.map((option) => (
+                            <button
+                              type="button"
+                              key={option.value}
+                              className={`ticket-option-btn ${formData.ticketType === option.value ? "active" : ""}`}
+                              onClick={() => handleTicketSelect(option.value)}
+                            >
+                              <span>{option.label}</span>
+                              <strong>Rs. {option.amount}</strong>
+                            </button>
+                          ))}
+                        </div>
+                        {formData.ticketType && (
+                          <p className="selected-amount">Amount to pay: Rs. {formData.amount}</p>
+                        )}
+                     </div>
+
                      {[
                         { label: "Transaction ID", type: "text", field: "transactionId" },
                         { label: "Sender Name", type: "text", field: "senderName" },
@@ -299,20 +343,7 @@ const RegisterPage = () => {
                  
                  {showSample && (
                      <div className="sample-image-container">
-                         <div className="sample-receipt">
-                             <div className="receipt-header">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="#4ade80"/>
-                                    <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                                <span>Payment Success</span>
-                             </div>
-                             <div className="receipt-body">
-                                 <div className="receipt-line"><span className="receipt-label">To:</span><span>TEDxDJSCE</span></div>
-                                 <div className="receipt-line"><span className="receipt-label">Amount:</span><span>₹850</span></div>
-                                 <div className="receipt-line"><span className="receipt-label">Txn ID:</span><span>1234567890</span></div>
-                             </div>
-                         </div>
+                     <img src="/sample_image.jpg" alt="Sample payment screenshot" className="sample-image-preview" loading="lazy" />
                          <p className="sample-hint">Please ensure Transaction ID and Amount are clearly visible.</p>
                      </div>
                  )}

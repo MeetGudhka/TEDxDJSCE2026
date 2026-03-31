@@ -531,6 +531,105 @@
   padding: 0 15px;
 }
 
+.payment-qr-card {
+  margin-bottom: 26px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeInUp 0.45s ease forwards;
+}
+
+.payment-qr-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.payment-qr-title {
+  color: var(--white);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.payment-qr-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+}
+
+.payment-qr-image {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  display: block;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.ticket-selector {
+  margin-bottom: 26px;
+  opacity: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--index) * 0.12s + 1.4s);
+}
+
+.ticket-title {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.ticket-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ticket-option-btn {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 14px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: all 0.25s ease;
+  font-size: 0.95rem;
+}
+
+.ticket-option-btn strong {
+  color: var(--red);
+  font-size: 0.95rem;
+}
+
+.ticket-option-btn:hover {
+  border-color: rgba(235, 0, 40, 0.7);
+  transform: translateY(-1px);
+}
+
+.ticket-option-btn.active {
+  border-color: var(--red);
+  background: rgba(235, 0, 40, 0.15);
+  box-shadow: 0 0 12px rgba(235, 0, 40, 0.2);
+}
+
+.selected-amount {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+}
+
 /* FORM SECTION - Enhanced */
 .form-section {
   flex: 1;
@@ -818,41 +917,13 @@
   animation: fadeInUp 0.4s ease forwards;
 }
 
-.sample-receipt {
-  background: #111;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-.receipt-header {
-  background: rgba(235, 0, 40, 0.1);
-  color: #4ade80;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  border-bottom: 1px dashed rgba(255,255,255,0.1);
-}
-
-.receipt-body {
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.receipt-line {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.receipt-label {
-  color: rgba(255, 255, 255, 0.5);
+.sample-image-preview {
+  width: 100%;
+  max-width: 280px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .sample-hint {
@@ -1007,6 +1078,10 @@
     min-height: 100px;
   }
 
+  .ticket-options {
+    grid-template-columns: 1fr;
+  }
+
   /* Mobile Circles */
   .circle-1 {
     width: 250px;
@@ -1126,6 +1201,11 @@
 
   .dropbox-placeholder p {
     font-size: 0.9rem;
+  }
+
+  .payment-qr-head {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .prime-button {
