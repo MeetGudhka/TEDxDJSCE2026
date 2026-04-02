@@ -22,13 +22,17 @@ const TICKET_OPTIONS = [
   { value: "premium", label: "Premium", amount: 200 },
 ];
 
+const UPI_ID = "meetgudhka5@okicici";
+
 const RegisterPage = () => {
   const [formData, setFormData] = useState(() => {
     const saved = localStorage.getItem('registrationProgress');
     if (saved) {
       try {
         return { ...DEFAULT_FORM_DATA, ...JSON.parse(saved) };
-      } catch (e) {}
+      } catch {
+        localStorage.removeItem('registrationProgress');
+      }
     }
     return DEFAULT_FORM_DATA;
   });
@@ -40,6 +44,8 @@ const RegisterPage = () => {
   const [screenshotPreview, setScreenshotPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [showSample, setShowSample] = useState(false);
+  const [hasExpandedPaymentSection, setHasExpandedPaymentSection] = useState(false);
+  const [isUpiCopied, setIsUpiCopied] = useState(false);
   const fileInputRef = React.useRef(null);
   
   const isPersonalInfoFilled = () => {
@@ -48,6 +54,16 @@ const RegisterPage = () => {
         if (!formData.branch || !formData.sapId || !formData.rollNumber) return false;
     } else if (formData.collegeType === "other") {
         if (!formData.collegeName) return false;
+    }
+    return true;
+  };
+
+  const isPersonalInfoFilledFor = (data) => {
+    if (!data.fullName || !data.email || !data.contact || !data.collegeType) return false;
+    if (data.collegeType === "djsce") {
+      if (!data.branch || !data.sapId || !data.rollNumber) return false;
+    } else if (data.collegeType === "other") {
+      if (!data.collegeName) return false;
     }
     return true;
   };
@@ -109,7 +125,7 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbyd5VmAy0HYe05MvR62mccNAWf7_J-iwSabCxAEhmScdnLxc6heKHEWg9bDC4xtbdOIdw/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbyd5VmAy0HYe05MvR62mccNAWf7_J-iwSabCxAEhmScdnLxc6heKHEWg9bDC4xtbdOIdw/exec', {
         method: 'POST',
         mode: 'no-cors', // Apps Script handles no-cors for simple POSTs
         headers: { 'Content-Type': 'application/json' },
@@ -122,6 +138,7 @@ const RegisterPage = () => {
       setFormData(DEFAULT_FORM_DATA);
       setScreenshotData(null);
       setScreenshotPreview(null);
+      setHasExpandedPaymentSection(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
       localStorage.removeItem('registrationProgress');
     } catch (err) {
@@ -131,7 +148,13 @@ const RegisterPage = () => {
   };
 
   const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => {
+      const next = { ...prev, [field]: value };
+      if (!hasExpandedPaymentSection && isPersonalInfoFilledFor(next)) {
+        setHasExpandedPaymentSection(true);
+      }
+      return next;
+    });
   };
 
   const handleTicketSelect = (ticketValue) => {
@@ -143,6 +166,30 @@ const RegisterPage = () => {
       amount: String(selectedTicket.amount),
     }));
   };
+
+  const copyUpiId = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(UPI_ID);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = UPI_ID;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "absolute";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      setIsUpiCopied(true);
+      setTimeout(() => setIsUpiCopied(false), 1800);
+    } catch {
+      alert("Could not copy UPI ID. Please copy it manually.");
+    }
+  };
+
+  const isPaymentSectionVisible = isPersonalInfoFilled();
 
   return (
     <div className="ted-register-container">
@@ -190,6 +237,19 @@ const RegisterPage = () => {
                 Admin Login
               </Link>
             </div>
+
+            {hasExpandedPaymentSection && (
+              <div className="terms-card scale-in">
+                <h3>Terms And Conditions</h3>
+                <ul>
+                  <li>Ticket is confirmed only after successful payment verification.</li>
+                  <li>The selected pass type must match the paid amount exactly.</li>
+                  <li>Payment screenshot must clearly show transaction ID and amount.</li>
+                  <li>Tickets are non-refundable and non-transferable once submitted.</li>
+                  <li>TEDxDJSCE may reject incomplete or incorrect registrations.</li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 
@@ -245,7 +305,7 @@ const RegisterPage = () => {
                 { label: "Branch", type: "text", field: "branch" },
                 { label: "Roll Number", type: "text", field: "rollNumber" },
                 { label: "SAP ID", type: "text", field: "sapId" },
-              ].map((field, i) => (
+              ].map((field) => (
                 <div className="field-wrapper scale-in" key={field.field} style={{ "--index": 0 }}>
                   <input
                     type={field.type}
@@ -260,7 +320,7 @@ const RegisterPage = () => {
 
               {formData.collegeType === "other" && [
                 { label: "College Name", type: "text", field: "collegeName" },
-              ].map((field, i) => (
+              ].map((field) => (
                 <div className="field-wrapper scale-in" key={field.field} style={{ "--index": 0 }}>
                   <input
                     type={field.type}
@@ -274,7 +334,7 @@ const RegisterPage = () => {
               ))}
 
               {/* 4. Payment Section (Appears ONLY if forms filled) */}
-              {isPersonalInfoFilled() && (
+                {isPaymentSectionVisible && (
                  <div className="payment-section scale-in">
                      <div className="section-divider">
                          <span>Payment Details</span>
@@ -291,6 +351,20 @@ const RegisterPage = () => {
                           className="payment-qr-image"
                           loading="lazy"
                         />
+                        <div className="upi-copy-row">
+                          <div className="upi-copy-text-wrap">
+                            <span className="upi-copy-label">UPI ID</span>
+                            <span className="upi-copy-id">{UPI_ID}</span>
+                          </div>
+                          <button
+                            type="button"
+                            className={`upi-copy-btn ${isUpiCopied ? "copied" : ""}`}
+                            onClick={copyUpiId}
+                            aria-label="Copy UPI ID"
+                          >
+                            {isUpiCopied ? "Copied" : "Copy"}
+                          </button>
+                        </div>
                      </div>
 
                      <div className="ticket-selector" style={{ "--index": 1 }}>
@@ -326,6 +400,9 @@ const RegisterPage = () => {
                           />
                           <label>{field.label}</label>
                           <div className="underline"></div>
+                          {field.field === "senderName" && (
+                            <p className="field-note">The name of the person, or the account holder's name from whose account the money was sent.</p>
+                          )}
                         </div>
                      ))}
                      
@@ -385,6 +462,7 @@ const RegisterPage = () => {
                      </button>
                  </div>
               )}
+
             </div>
           </div>
         </div>
