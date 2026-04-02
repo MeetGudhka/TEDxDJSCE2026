@@ -1,0 +1,29 @@
+@media screen and (max-width: 1280px) {
+    .VideoBG video {
+        object-fit: cover;
+    }
+}
+
+/* Default → Show Laptop, Hide Mobile */
+.video-laptop {
+    display: block;
+}
+
+.video-mobile {
+    display: none;
+}
+
+/* Tablet & below */
+@media screen and (max-width: 768px) {
+    .video-laptop {
+        display: none;
+    }
+
+    .VideoBG video {
+        object-fit: contain;
+    }
+
+    .video-mobile {
+        display: block;
+    }
+}
