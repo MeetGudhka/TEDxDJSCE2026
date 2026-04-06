@@ -122,9 +122,7 @@ const ComingSoon = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.5 }}
                         >
-                            Something
-                            <span className="highlight-text"> Extraordinary </span>
-                            is Coming
+                            <span className="highlight-text"> THE QUIET THRESHOLD </span>
                         </motion.h1>
 
                         <motion.p
@@ -133,8 +131,7 @@ const ComingSoon = () => {
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.6, delay: 0.7 }}
                         >
-                            <span className="highlight-text" style={{ fontWeight: '800', fontSize: '1.3em' }}>Main Event Soon</span> - Get ready for an unforgettable experience filled with inspiring talks,
-                            innovative ideas, and meaningful connections. Be part of something bigger.
+                            <span className="highlight-text" style={{ fontWeight: '800', fontSize: '1.3em' }}>TEDxDJSCE</span> - “The Quiet Threshold” captures those subtle moments just before life changes—when everything feels still yet uncertain. It’s about looking inward, finding quiet strength, and having the courage to step forward, even when the path isn’t clear. Sometimes, the biggest transformations begin softly, in silence.
                         </motion.p>
                     </motion.div>
 

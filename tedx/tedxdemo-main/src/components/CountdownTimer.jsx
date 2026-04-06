@@ -57,6 +57,8 @@ const CountdownTimer = ({ targetDate = '2026-03-15T10:00:00' }) => {
                 >
                     <span className="title-line"></span>
                     TEDxDJSCE: THE QUIET THRESHOLD
+                    <br />
+                    21st APRIL 2026
                     <span className="title-line"></span>
                 </motion.h2>
 
