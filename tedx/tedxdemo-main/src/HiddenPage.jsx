@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import QRCode from 'qrcode.react';
+import QRCode from 'qrcode/lib/browser.js';
 import './HiddenPage.css';
 
 // Canvas Ticket Generation Helper
