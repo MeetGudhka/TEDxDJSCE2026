@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./RegisterPage.css";
-import Aurora from "./components/Aurora";
 
 const DEFAULT_FORM_DATA = {
   fullName: "",
@@ -23,17 +22,13 @@ const TICKET_OPTIONS = [
   { value: "premium", label: "Premium", amount: 200 },
 ];
 
-const UPI_ID = "meetgudhka5@okicici";
-
 const RegisterPage = () => {
   const [formData, setFormData] = useState(() => {
     const saved = localStorage.getItem('registrationProgress');
     if (saved) {
       try {
         return { ...DEFAULT_FORM_DATA, ...JSON.parse(saved) };
-      } catch {
-        localStorage.removeItem('registrationProgress');
-      }
+      } catch (e) { }
     }
     return DEFAULT_FORM_DATA;
   });
@@ -45,8 +40,6 @@ const RegisterPage = () => {
   const [screenshotPreview, setScreenshotPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [showSample, setShowSample] = useState(false);
-  const [hasExpandedPaymentSection, setHasExpandedPaymentSection] = useState(false);
-  const [isUpiCopied, setIsUpiCopied] = useState(false);
   const fileInputRef = React.useRef(null);
 
   const isPersonalInfoFilled = () => {
@@ -55,16 +48,6 @@ const RegisterPage = () => {
       if (!formData.branch || !formData.sapId || !formData.rollNumber) return false;
     } else if (formData.collegeType === "other") {
       if (!formData.collegeName) return false;
-    }
-    return true;
-  };
-
-  const isPersonalInfoFilledFor = (data) => {
-    if (!data.fullName || !data.email || !data.contact || !data.collegeType) return false;
-    if (data.collegeType === "djsce") {
-      if (!data.branch || !data.sapId || !data.rollNumber) return false;
-    } else if (data.collegeType === "other") {
-      if (!data.collegeName) return false;
     }
     return true;
   };
@@ -126,36 +109,37 @@ const RegisterPage = () => {
     }
 
     try {
-      await fetch('https://script.google.com/macros/s/AKfycbyd5VmAy0HYe05MvR62mccNAWf7_J-iwSabCxAEhmScdnLxc6heKHEWg9bDC4xtbdOIdw/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyedMQqm2f80lfir2cmxmRI_dFARNhrA57elkkdwvlzvpoUCQ3CP_ZGJtqxbRXzLnBmEQ/exec', {
         method: 'POST',
-        mode: 'no-cors', // Apps Script handles no-cors for simple POSTs
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ ...formData, screenshot: screenshotData, action: 'create' })
       });
 
-      // Since we use no-cors, we can't check response.ok, but the submission will go through
-      alert("✅ Your Details Submitted Successfully.!");
-      // Reset form
-      setFormData(DEFAULT_FORM_DATA);
-      setScreenshotData(null);
-      setScreenshotPreview(null);
-      setHasExpandedPaymentSection(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      localStorage.removeItem('registrationProgress');
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseErr) {
+        throw new Error("Server returned HTML or invalid JSON. It might be an authorization error.");
+      }
+
+      if (data.result === 'success') {
+        alert("✅ Your Details Submitted Successfully.!");
+        setFormData(DEFAULT_FORM_DATA);
+        setScreenshotData(null);
+        setScreenshotPreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        localStorage.removeItem('registrationProgress');
+      } else {
+        alert("❌ Error from Google: " + (data.message || JSON.stringify(data)));
+      }
     } catch (err) {
       console.error("Error registering:", err);
-      alert("❌ Registration failed. Please try again.");
+      alert("❌ Registration failed: " + err.message);
     }
   };
 
   const handleChange = (field, value) => {
-    setFormData((prev) => {
-      const next = { ...prev, [field]: value };
-      if (!hasExpandedPaymentSection && isPersonalInfoFilledFor(next)) {
-        setHasExpandedPaymentSection(true);
-      }
-      return next;
-    });
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleTicketSelect = (ticketValue) => {
@@ -168,41 +152,15 @@ const RegisterPage = () => {
     }));
   };
 
-  const copyUpiId = async () => {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(UPI_ID);
-      } else {
-        const textArea = document.createElement("textarea");
-        textArea.value = UPI_ID;
-        textArea.setAttribute("readonly", "");
-        textArea.style.position = "absolute";
-        textArea.style.left = "-9999px";
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textArea);
-      }
-      setIsUpiCopied(true);
-      setTimeout(() => setIsUpiCopied(false), 1800);
-    } catch {
-      alert("Could not copy UPI ID. Please copy it manually.");
-    }
-  };
-
-  const isPaymentSectionVisible = isPersonalInfoFilled();
-
   return (
     <div className="ted-register-container">
-      {/* Aurora WebGL Background */}
-      <div className="aurora-bg">
-        <Aurora
-          colorStops={["#3d0000", "#8B0000", "#3d0000"]}
-          amplitude={0.8}
-          blend={0.4}
-          speed={0.4}
-        />
-      </div>
+      {/* Animated Background Circles */}
+      <div className="circle circle-1"></div>
+      <div className="circle circle-2"></div>
+      <div className="circle circle-3"></div>
+      <div className="circle circle-4"></div>
+      <div className="circle circle-5"></div>
+      <div className="circle circle-6"></div>
 
       <div className="main-content">
         {/* Left Side: Branding/Impact */}
@@ -220,18 +178,18 @@ const RegisterPage = () => {
               <span className="letter letter-e2">E</span>
             </h1>
             <p className="description">
-              Where silence becomes the start of change. <br />
-              On the edge of becoming. <br />
-              The moment before everything shifts.
+              Beyond sight lies insight. <br />
+              Second Sight is a journey into hidden perspectives. <br />
+              Where vision transforms into understanding.
             </p>
             <div className="event-details">
               <div className="detail-item">
-                <span className="label">THEME</span>
-                <span className="value">THE QUIET THRESHOLD</span>
+                <span className="label">EVENT</span>
+                <span className="value">SECOND SIGHT</span>
               </div>
               <div className="detail-item">
                 <span className="label">DATE</span>
-                <span className="value">21-04-2026</span>
+                <span className="value">10-03-2026</span>
               </div>
             </div>
 
@@ -249,9 +207,8 @@ const RegisterPage = () => {
             <h2 className="form-title">Registration</h2>
 
             <div className="luxury-form">
-              <h1 style={{ fontSize: "1.2rem" }}>Registration Will Start Soon</h1>
               {/* 1. Base Personal Info */}
-              {/* {[
+              {[
                 { label: "Full Name", type: "text", field: "fullName" },
                 { label: "Contact Number", type: "tel", field: "contact" },
                 { label: "Email ID", type: "email", field: "email" },
@@ -266,10 +223,10 @@ const RegisterPage = () => {
                   <label>{field.label}</label>
                   <div className="underline"></div>
                 </div>
-              ))}  */}
+              ))}
 
               {/* 2. College Selection Toggle */}
-                {/* <div className="radio-wrapper" style={{ "--index": 3 }}>
+              <div className="radio-wrapper" style={{ "--index": 3 }}>
                 <div className="radio-title">Select College</div>
                 <div className="radio-group">
                   <div className="radio-option">
@@ -289,14 +246,14 @@ const RegisterPage = () => {
                     <label htmlFor="col-other" className="radio-label">Other</label>
                   </div>
                 </div>
-              </div>  */}
+              </div>
 
               {/* 3. Conditional College Info */}
-               {/* {formData.collegeType === "djsce" && [
+              {formData.collegeType === "djsce" && [
                 { label: "Branch", type: "text", field: "branch" },
                 { label: "Roll Number", type: "text", field: "rollNumber" },
                 { label: "SAP ID", type: "text", field: "sapId" },
-              ].map((field) => (
+              ].map((field, i) => (
                 <div className="field-wrapper scale-in" key={field.field} style={{ "--index": 0 }}>
                   <input
                     type={field.type}
@@ -307,11 +264,11 @@ const RegisterPage = () => {
                   <label>{field.label}</label>
                   <div className="underline"></div>
                 </div>
-              ))}  */}
+              ))}
 
-               {/* {formData.collegeType === "other" && [
+              {formData.collegeType === "other" && [
                 { label: "College Name", type: "text", field: "collegeName" },
-              ].map((field) => (
+              ].map((field, i) => (
                 <div className="field-wrapper scale-in" key={field.field} style={{ "--index": 0 }}>
                   <input
                     type={field.type}
@@ -322,10 +279,10 @@ const RegisterPage = () => {
                   <label>{field.label}</label>
                   <div className="underline"></div>
                 </div>
-              ))}  */}
+              ))}
 
               {/* 4. Payment Section (Appears ONLY if forms filled) */}
-              {isPaymentSectionVisible && (
+              {isPersonalInfoFilled() && (
                 <div className="payment-section scale-in">
                   <div className="section-divider">
                     <span>Payment Details</span>
@@ -342,20 +299,6 @@ const RegisterPage = () => {
                       className="payment-qr-image"
                       loading="lazy"
                     />
-                    <div className="upi-copy-row">
-                      <div className="upi-copy-text-wrap">
-                        <span className="upi-copy-label">UPI ID</span>
-                        <span className="upi-copy-id">{UPI_ID}</span>
-                      </div>
-                      <button
-                        type="button"
-                        className={`upi-copy-btn ${isUpiCopied ? "copied" : ""}`}
-                        onClick={copyUpiId}
-                        aria-label="Copy UPI ID"
-                      >
-                        {isUpiCopied ? "Copied" : "Copy"}
-                      </button>
-                    </div>
                   </div>
 
                   <div className="ticket-selector" style={{ "--index": 1 }}>
@@ -391,9 +334,6 @@ const RegisterPage = () => {
                       />
                       <label>{field.label}</label>
                       <div className="underline"></div>
-                      {field.field === "senderName" && (
-                        <p className="field-note">The name of the person, or the account holder's name from whose account the money was sent.</p>
-                      )}
                     </div>
                   ))}
 
@@ -453,7 +393,6 @@ const RegisterPage = () => {
                   </button>
                 </div>
               )}
-
             </div>
           </div>
         </div>

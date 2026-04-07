@@ -1,6 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import QRCode from 'qrcode';
 import './HiddenPage.css';
+
+// Canvas Ticket Generation Helper
+const generateTicketBase64 = async (name, ticketId) => {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const templateImg = new Image();
+    templateImg.crossOrigin = "anonymous";
+    templateImg.src = "/tedx.jpeg"; // Make sure tedx.jpeg is in public/ folder
+
+    templateImg.onload = async () => {
+      canvas.width = templateImg.width;
+      canvas.height = templateImg.height;
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Draw background template
+      ctx.drawImage(templateImg, 0, 0);
+
+      try {
+        const qrDataUrl = await QRCode.toDataURL(`TEDxDJSC-${ticketId}`, { margin: 1, width: parseInt(w * 0.22) });
+        const qrImg = new Image();
+        qrImg.onload = () => {
+          const qrSize = parseInt(w * 0.22);
+          const qrX = w - qrSize - 60;
+          const qrY = parseInt(h * 0.18);
+
+          ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+
+          // Use Arial instead of loading TTF to avoid FontFace API delay complexities
+          ctx.font = "bold 50px Arial, sans-serif";
+
+          const textMetrics = ctx.measureText(name);
+          const textWidth = textMetrics.width;
+          const textX = qrX + (qrSize - textWidth) / 2;
+          const textY = qrY + qrSize + 20 + 50;
+
+          // Shadow layout offset = 2
+          ctx.fillStyle = "black";
+          ctx.fillText(name, textX + 2, textY + 2);
+
+          // Main text
+          ctx.fillStyle = "white";
+          ctx.fillText(name, textX, textY);
+
+          resolve(canvas.toDataURL("image/png"));
+        };
+        qrImg.src = qrDataUrl;
+      } catch (e) {
+        reject(e);
+      }
+    };
+
+    templateImg.onerror = () => reject(new Error("Template image 'tedx.jpeg' not found in public folder"));
+  });
+};
 
 const HiddenPage = () => {
   const navigate = useNavigate();
@@ -17,7 +74,7 @@ const HiddenPage = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbyd5VmAy0HYe05MvR62mccNAWf7_J-iwSabCxAEhmScdnLxc6heKHEWg9bDC4xtbdOIdw/exec');
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyedMQqm2f80lfir2cmxmRI_dFARNhrA57elkkdwvlzvpoUCQ3CP_ZGJtqxbRXzLnBmEQ/exec');
       if (!response.ok) throw new Error('Failed to fetch students');
       const data = await response.json();
       setStudents(data);
@@ -29,22 +86,42 @@ const HiddenPage = () => {
     }
   };
 
-  const handleStatusChange = async (id, newStatus) => {
+  const handleStatusChange = async (student, newStatus) => {
+    const id = student._id;
+    let ticketBase64 = null;
+
+    // Generate ticket graphics if status is verified
+    if (newStatus === 'verified') {
+      try {
+        ticketBase64 = await generateTicketBase64(student.fullName || "Guest", id || student.sapId || "001");
+      } catch (err) {
+        console.error("Ticket Generation Error:", err);
+        alert(`Warning: Could not generate ticket locally. Continuing with verification anyway. Error: ${err.message}`);
+      }
+    }
+
     // Optimistic update
     setStudents(prevStudents =>
-      prevStudents.map(student =>
-        student._id === id ? { ...student, status: newStatus } : student
+      prevStudents.map(s =>
+        s._id === id ? { ...s, status: newStatus } : s
       )
     );
 
     try {
-      await fetch('https://script.google.com/macros/s/AKfycbyd5VmAy0HYe05MvR62mccNAWf7_J-iwSabCxAEhmScdnLxc6heKHEWg9bDC4xtbdOIdw/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbyedMQqm2f80lfir2cmxmRI_dFARNhrA57elkkdwvlzvpoUCQ3CP_ZGJtqxbRXzLnBmEQ/exec', {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'update', id, status: newStatus })
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'update',
+          id,
+          status: newStatus,
+          ticketBase64: ticketBase64,
+          ticketId: id || student.sapId
+        })
       });
-      // no-cors means we can't check response.ok, so we rely on optimistic update
+      if (ticketBase64) {
+        alert("✅ Student Verified & Ticket officially generated and uploaded!");
+      }
     } catch (err) {
       console.error("Error updating status:", err);
       fetchStudents(); // Revert on error
@@ -55,7 +132,7 @@ const HiddenPage = () => {
     if (!window.confirm('Are you sure you want to delete this student?')) return;
 
     try {
-      await fetch('https://script.google.com/macros/s/AKfycbyd5VmAy0HYe05MvR62mccNAWf7_J-iwSabCxAEhmScdnLxc6heKHEWg9bDC4xtbdOIdw/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbyedMQqm2f80lfir2cmxmRI_dFARNhrA57elkkdwvlzvpoUCQ3CP_ZGJtqxbRXzLnBmEQ/exec', {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
@@ -87,6 +164,16 @@ const HiddenPage = () => {
   if (loading) return <div className="loading">Loading students...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
+  const getDirectImageUrl = (url) => {
+    if (!url) return '';
+    const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      // Use Google's thumbnail API or direct download link to bypass cookie blocking
+      return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+    }
+    return url;
+  };
+
   return (
     <div className="hidden-page-container">
 
@@ -94,7 +181,7 @@ const HiddenPage = () => {
         <div className="image-modal-overlay" onClick={() => setSelectedImage(null)}>
           <div className="image-modal-content" onClick={e => e.stopPropagation()}>
             <button className="close-modal-btn" onClick={() => setSelectedImage(null)}>✕</button>
-            <img src={selectedImage} alt="Payment Screenshot" />
+            <img src={getDirectImageUrl(selectedImage)} alt="Payment Screenshot" referrerPolicy="no-referrer" />
           </div>
         </div>
       )}
@@ -168,8 +255,8 @@ const HiddenPage = () => {
             </div>
 
             <div className="screenshot-section">
-              <button 
-                className="view-screenshot-btn" 
+              <button
+                className="view-screenshot-btn"
                 onClick={() => setSelectedImage(student.screenshot)}
                 disabled={!student.screenshot}
               >
@@ -180,19 +267,19 @@ const HiddenPage = () => {
             <div className="action-buttons">
               <button
                 className={`action-btn btn-verify ${student.status === 'verified' ? 'active' : ''}`}
-                onClick={() => handleStatusChange(student._id, 'verified')}
+                onClick={() => handleStatusChange(student, 'verified')}
               >
                 <span>★ Verify</span>
               </button>
               <button
                 className={`action-btn btn-in ${student.status === 'in' ? 'active' : ''}`}
-                onClick={() => handleStatusChange(student._id, 'in')}
+                onClick={() => handleStatusChange(student, 'in')}
               >
                 <span>✓ Check In</span>
               </button>
               <button
                 className={`action-btn btn-out ${student.status === 'out' ? 'active' : ''}`}
-                onClick={() => handleStatusChange(student._id, 'out')}
+                onClick={() => handleStatusChange(student, 'out')}
               >
                 <span>✗ Check Out</span>
               </button>
