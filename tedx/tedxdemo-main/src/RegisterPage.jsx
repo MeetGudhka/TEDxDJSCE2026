@@ -291,7 +291,7 @@ const RegisterPage = () => {
                   <div className="payment-qr-card">
                     <div className="payment-qr-head">
                       <span className="payment-qr-title">Scan QR To Pay</span>
-                      <span className="payment-qr-subtitle">Use any UPI app</span>
+                      <span className="payment-qr-subtitle">Use any UPI app like GPay, PhonePe, Paytm, etc.</span>
                     </div>
                     <img
                       src="/meet_qr.jpeg"
