@@ -4,6 +4,12 @@ import './Team.css';
 const teamData = {
     '25-26': [
         {
+            department: 'Faculty-in-charge',
+            members: [
+                { name: 'Dr.Anjali Samuel', role: 'Faculty-in-charge', img: '/res/Admin/Dr. Anjali Samuel.jpeg', desc: 'Meet the guiding force behind TEDxDJSCE—Dr.Anjali Samuel, whose mentorship and vision inspire us to bring ideas worth spreading to life!' },
+            ]
+        },
+        {
             department: 'Leadership',
             members: [
                 { name: 'Shubh Selugar', role: 'Chairperson', img: '/res/Admin/Shubh Selugar.png', desc: 'Meet the heart and vision of TEDxDJSCE—our Chairperson, Shubh Selugar, whose leadership and passion inspire the team to bring ideas worth spreading to life!' },
@@ -13,7 +19,7 @@ const teamData = {
         },
         {
             department: 'Curators',
-            members:[
+            members: [
                 { name: 'Maanya Shah', role: 'Chief Curator', img: '/res/Admin/Maanya Shah.png', desc: 'The guiding mind behind our speaker selection, Maanya Shah ensures every talk is impactful, thought-provoking, and unforgettable.' },
                 { name: 'Shubham Gala', role: 'Chief Curator', img: '/res/Admin/Shubham Gala.png', desc: 'Shubham Gala brings meticulous insight and creativity to curate TEDx talks that inspire, challenge, and engage our audience.' },
             ]
@@ -69,6 +75,12 @@ const teamData = {
         }
     ],
     '24-25': [
+        {
+            department: 'Faculty-in-charge',
+            members: [
+                { name: 'Dr.Anjali Samuel', role: 'Faculty-in-charge', img: '/res/Admin/Dr. Anjali Samuel.jpeg', desc: 'Meet the guiding force behind TEDxDJSCE—Dr.Anjali Samuel, whose mentorship and vision inspire us to bring ideas worth spreading to life!' },
+            ]
+        },
         {
             department: 'Leadership',
             members: [
@@ -134,6 +146,12 @@ const teamData = {
         }
     ],
     '23-24': [
+        {
+            department: 'Faculty-in-charge',
+            members: [
+                { name: 'Dr.Anjali Samuel', role: 'Faculty-in-charge', img: '/res/Admin/Dr. Anjali Samuel.jpeg', desc: 'Meet the guiding force behind TEDxDJSCE—Dr.Anjali Samuel, whose mentorship and vision inspire us to bring ideas worth spreading to life!' },
+            ]
+        },
         {
             department: 'Leadership',
             members: [
