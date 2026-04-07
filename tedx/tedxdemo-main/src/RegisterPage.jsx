@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./RegisterPage.css";
+import Aurora from "./components/Aurora";
 
 const DEFAULT_FORM_DATA = {
   fullName: "",
@@ -193,13 +194,15 @@ const RegisterPage = () => {
 
   return (
     <div className="ted-register-container">
-      {/* Animated Background Circles */}
-      <div className="circle circle-1"></div>
-      <div className="circle circle-2"></div>
-      <div className="circle circle-3"></div>
-      <div className="circle circle-4"></div>
-      <div className="circle circle-5"></div>
-      <div className="circle circle-6"></div>
+      {/* Aurora WebGL Background */}
+      <div className="aurora-bg">
+        <Aurora
+          colorStops={["#3d0000", "#8B0000", "#3d0000"]}
+          amplitude={0.8}
+          blend={0.4}
+          speed={0.4}
+        />
+      </div>
 
       <div className="main-content">
         {/* Left Side: Branding/Impact */}
@@ -237,19 +240,6 @@ const RegisterPage = () => {
                 Admin Login
               </Link>
             </div>
-
-            {/* {hasExpandedPaymentSection && (
-              <div className="terms-card scale-in">
-                <h3>Terms And Conditions</h3>
-                <ul>
-                  <li>Ticket is confirmed only after successful payment verification.</li>
-                  <li>The selected pass type must match the paid amount exactly.</li>
-                  <li>Payment screenshot must clearly show transaction ID and amount.</li>
-                  <li>Tickets are non-refundable and non-transferable once submitted.</li>
-                  <li>TEDxDJSCE may reject incomplete or incorrect registrations.</li>
-                </ul>
-              </div>
-            )} */}
           </div>
         </div>
 
@@ -276,10 +266,10 @@ const RegisterPage = () => {
                   <label>{field.label}</label>
                   <div className="underline"></div>
                 </div>
-              ))} */}
+              ))}  */}
 
               {/* 2. College Selection Toggle */}
-              {/* <div className="radio-wrapper" style={{ "--index": 3 }}>
+                {/* <div className="radio-wrapper" style={{ "--index": 3 }}>
                 <div className="radio-title">Select College</div>
                 <div className="radio-group">
                   <div className="radio-option">
@@ -299,10 +289,10 @@ const RegisterPage = () => {
                     <label htmlFor="col-other" className="radio-label">Other</label>
                   </div>
                 </div>
-              </div> */}
+              </div>  */}
 
               {/* 3. Conditional College Info */}
-              {/* {formData.collegeType === "djsce" && [
+               {/* {formData.collegeType === "djsce" && [
                 { label: "Branch", type: "text", field: "branch" },
                 { label: "Roll Number", type: "text", field: "rollNumber" },
                 { label: "SAP ID", type: "text", field: "sapId" },
@@ -317,9 +307,9 @@ const RegisterPage = () => {
                   <label>{field.label}</label>
                   <div className="underline"></div>
                 </div>
-              ))} */}
+              ))}  */}
 
-              {/* {formData.collegeType === "other" && [
+               {/* {formData.collegeType === "other" && [
                 { label: "College Name", type: "text", field: "collegeName" },
               ].map((field) => (
                 <div className="field-wrapper scale-in" key={field.field} style={{ "--index": 0 }}>
@@ -332,7 +322,7 @@ const RegisterPage = () => {
                   <label>{field.label}</label>
                   <div className="underline"></div>
                 </div>
-              ))} */}
+              ))}  */}
 
               {/* 4. Payment Section (Appears ONLY if forms filled) */}
               {isPaymentSectionVisible && (
