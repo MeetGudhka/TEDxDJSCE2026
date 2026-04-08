@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import "./RegisterPage.css";
 import Aurora from "./components/Aurora";
 
-import qrImage from "../public/kartik_qr.png";
-import sampleImage from "../public/sample_image.jpg";
+// Assets from the public directory are served at the root path in Vite.
+// We removed the relative imports because Vite expects public assets 
+// to be referenced directly via root path (e.g., "/kartik_qr.png").
+
 
 const DEFAULT_FORM_DATA = {
   fullName: "",
@@ -458,7 +460,7 @@ const RegisterPage = () => {
                       <span className="payment-qr-subtitle">Use any UPI app</span>
                     </div>
                     <img
-                      src={qrImage}
+                      src="/kartik_qr.png"
                       alt="TEDxDJSCE payment QR"
                       className="payment-qr-image"
                       loading="lazy"
@@ -525,7 +527,7 @@ const RegisterPage = () => {
 
                     {showSample && (
                       <div className="sample-image-container">
-                        <img src={sampleImage} alt="Sample payment screenshot" className="sample-image-preview" loading="lazy" />
+                        <img src="/sample_image.jpg" alt="Sample payment screenshot" className="sample-image-preview" loading="lazy" />
                         <p className="sample-hint">Please ensure Transaction ID and Amount are clearly visible.</p>
                       </div>
                     )}
