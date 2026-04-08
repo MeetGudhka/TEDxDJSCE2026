@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode/lib/browser.js';
 import './HiddenPage.css';
-import tedxTemplate from '../public/tedx.jpeg';
 
 // Canvas Ticket Generation Helper
 const generateTicketBase64 = async (name, ticketId) => {
@@ -10,7 +9,7 @@ const generateTicketBase64 = async (name, ticketId) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     const templateImg = new Image();
-    templateImg.src = tedxTemplate; // Imported via Vite to ensure correct production path
+    templateImg.src = '/tedx.jpeg';
 
     templateImg.onload = async () => {
       canvas.width = templateImg.width;
@@ -37,7 +36,7 @@ const generateTicketBase64 = async (name, ticketId) => {
           const textMetrics = ctx.measureText(name);
           const textWidth = textMetrics.width;
           const textX = qrX + (qrSize - textWidth) / 2;
-          const textY = qrY + qrSize + 20 + 50;
+          const textY = qrY + qrSize + 20 + 32; // Decreased base offset to move text higher up
 
           // Shadow layout offset = 2
           ctx.fillStyle = "black";
@@ -147,18 +146,31 @@ const HiddenPage = () => {
 
   // Filter students based on search query
   const filteredStudents = students.filter(student => {
-    const query = searchQuery.toLowerCase();
+    if (!searchQuery) return true;
+
+    // Split search into individual words (e.g., "john djsce" becomes ["john", "djsce"])
+    const searchTerms = searchQuery.trim().toLowerCase().split(/\s+/);
+
     const safe = (value) => (value ?? "").toString().toLowerCase();
-    return (
-      safe(student.fullName).includes(query) ||
-      safe(student.email).includes(query) ||
-      safe(student.rollNumber).includes(query) ||
-      safe(student.sapId).includes(query) ||
-      safe(student.branch).includes(query) ||
-      safe(student.contact).includes(query) ||
-      safe(student.transactionId).includes(query) ||
-      safe(student.senderName).includes(query)
-    );
+    const collegeText = student.collegeType === "djsce" ? "djsce d.j. sanghvi" : safe(student.collegeName);
+
+    // Combine all student data into one big searchable string
+    const searchableString = [
+      safe(student._id),
+      safe(student.fullName),
+      safe(student.email),
+      safe(student.rollNumber),
+      safe(student.sapId),
+      safe(student.branch),
+      safe(student.contact),
+      safe(student.senderName),
+      safe(student.transactionId),
+      collegeText,
+      safe(student.status)
+    ].join(" ");
+
+    // Return true ONLY if every single word they typed is found somewhere in this student's info
+    return searchTerms.every(term => searchableString.includes(term));
   });
 
   if (loading) return <div className="loading">Loading students...</div>;
@@ -249,8 +261,8 @@ const HiddenPage = () => {
                 <span className="info-value">{student.senderName || 'N/A'}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">Txn ID</span>
-                <span className="info-value">{student.transactionId || 'N/A'}</span>
+                <span className="info-label">College</span>
+                <span className="info-value">{student.collegeType === 'djsce' ? 'D.J. Sanghvi' : (student.collegeName || 'N/A')}</span>
               </div>
             </div>
 
