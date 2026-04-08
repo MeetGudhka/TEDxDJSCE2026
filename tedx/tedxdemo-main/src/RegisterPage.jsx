@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./RegisterPage.css";
+import Aurora from "./components/Aurora";
 
 const DEFAULT_FORM_DATA = {
   fullName: "",
@@ -22,6 +23,8 @@ const TICKET_OPTIONS = [
   { value: "premium", label: "Premium", amount: 250 },
 ];
 
+const UPI_ID = "kartiksunil14@oksbi";
+
 const RegisterPage = () => {
   const [formData, setFormData] = useState(() => {
     const saved = localStorage.getItem('registrationProgress');
@@ -41,6 +44,54 @@ const RegisterPage = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [showSample, setShowSample] = useState(false);
   const fileInputRef = React.useRef(null);
+
+  // Submission guard
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  // Toast notification
+  const [toast, setToast] = useState(null); // { type: 'success'|'error', message: string }
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 5000);
+  };
+
+  // UPI copy
+  const [isUpiCopied, setIsUpiCopied] = useState(false);
+  const copyUpiId = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(UPI_ID);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = UPI_ID;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "absolute";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      setIsUpiCopied(true);
+      setTimeout(() => setIsUpiCopied(false), 1800);
+    } catch {
+      showToast('error', 'Could not copy UPI ID. Please copy it manually.');
+    }
+  };
+
+  // Accordion state: expanded by default on desktop, collapsed on mobile
+  const [openAccordions, setOpenAccordions] = useState(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 900) {
+      return { tickets: true, instructions: true, payment: true };
+    }
+    return { tickets: false, instructions: false, payment: false };
+  });
+
+  const toggleAccordion = (key) => {
+    setOpenAccordions((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const isPersonalInfoFilled = () => {
     if (!formData.fullName || !formData.email || !formData.contact || !formData.collegeType) return false;
@@ -99,14 +150,33 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Prevent double submission
+    if (isSubmitting || hasSubmitted) return;
+
     if (!isPersonalInfoFilled()) {
-      alert("Please fill all required personal and college details.");
+      showToast('error', 'Please fill all required personal and college details.');
       return;
     }
-    if (!formData.ticketType || !formData.amount || !formData.transactionId || !formData.transactionId.trim() || !formData.senderName || !formData.senderName.trim() || !screenshotData) {
-      alert("Please complete payment details and upload a screenshot.");
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      showToast('error', 'Please enter a valid email address.');
       return;
     }
+
+    // Validate contact number (at least 10 digits)
+    if (!/^\d{10,}$/.test(formData.contact)) {
+      showToast('error', 'Please enter a valid 10-digit contact number.');
+      return;
+    }
+
+    if (!formData.ticketType || !formData.amount || !formData.senderName || !formData.senderName.trim() || !screenshotData) {
+      showToast('error', 'Please complete payment details and upload a screenshot.');
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
       const response = await fetch('https://script.google.com/macros/s/AKfycbyedMQqm2f80lfir2cmxmRI_dFARNhrA57elkkdwvlzvpoUCQ3CP_ZGJtqxbRXzLnBmEQ/exec', {
@@ -119,22 +189,25 @@ const RegisterPage = () => {
       try {
         data = await response.json();
       } catch (parseErr) {
-        throw new Error("Server returned HTML or invalid JSON. It might be an authorization error.");
+        throw new Error("Server returned an invalid response. Please try again.");
       }
 
       if (data.result === 'success') {
-        alert("✅ Your Details Submitted Successfully.!");
+        showToast('success', '\u2705 Registration submitted successfully! Your seat has been reserved.');
+        setHasSubmitted(true);
         setFormData(DEFAULT_FORM_DATA);
         setScreenshotData(null);
         setScreenshotPreview(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
         localStorage.removeItem('registrationProgress');
       } else {
-        alert("❌ Error from Google: " + (data.message || JSON.stringify(data)));
+        showToast('error', '\u274c Error: ' + (data.message || 'Something went wrong. Please try again.'));
       }
     } catch (err) {
       console.error("Error registering:", err);
-      alert("❌ Registration failed: " + err.message);
+      showToast('error', '\u274c Registration failed: ' + err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -153,14 +226,17 @@ const RegisterPage = () => {
   };
 
   return (
+    <>
     <div className="ted-register-container">
-      {/* Animated Background Circles */}
-      <div className="circle circle-1"></div>
-      <div className="circle circle-2"></div>
-      <div className="circle circle-3"></div>
-      <div className="circle circle-4"></div>
-      <div className="circle circle-5"></div>
-      <div className="circle circle-6"></div>
+      {/* Aurora WebGL Background */}
+      <div className="aurora-bg">
+        <Aurora
+          colorStops={["#3d0000", "#8B0000", "#3d0000"]}
+          amplitude={0.8}
+          blend={0.4}
+          speed={0.4}
+        />
+      </div>
 
       <div className="main-content">
         {/* Left Side: Branding/Impact */}
@@ -177,20 +253,94 @@ const RegisterPage = () => {
               <span className="letter letter-c">C</span>
               <span className="letter letter-e2">E</span>
             </h1>
+
+            <div className="event-theme">
+              <span className="theme-label">THE QUIET THRESHOLD</span>
+            </div>
+
             <p className="description">
-              Beyond sight lies insight. <br />
-              Second Sight is a journey into hidden perspectives. <br />
-              Where vision transforms into understanding.
+              Beyond silence lies transformation.
+              The Quiet Threshold is a space where subtle shifts become powerful turning points — where ideas emerge, perspectives evolve, and new beginnings take shape.
             </p>
+
             <div className="event-details">
               <div className="detail-item">
-                <span className="label">EVENT</span>
-                <span className="value">SECOND SIGHT</span>
-              </div>
-              <div className="detail-item">
                 <span className="label">DATE</span>
-                <span className="value">10-03-2026</span>
+                <span className="value">21-04-2026</span>
               </div>
+            </div>
+
+            {/* Accordion: Tickets */}
+            <div className="info-accordion">
+              <button
+                type="button"
+                className={`accordion-header ${openAccordions.tickets ? 'open' : ''}`}
+                onClick={() => toggleAccordion('tickets')}
+              >
+                <span>🎟️ Tickets</span>
+                <span className="accordion-chevron">{openAccordions.tickets ? '−' : '+'}</span>
+              </button>
+              {openAccordions.tickets && (
+                <div className="accordion-body">
+                  <div className="ticket-info-card">
+                    <div className="ticket-info-name">Classic Pass – ₹150</div>
+                    <ul className="ticket-info-perks">
+                      <li>Entry to the event</li>
+                      <li>TEDx goodies included</li>
+                    </ul>
+                  </div>
+                  <div className="ticket-info-card">
+                    <div className="ticket-info-name">Premium Pass – ₹250</div>
+                    <ul className="ticket-info-perks">
+                      <li>Entry to the event</li>
+                      <li>Meal included</li>
+                      <li>TEDx goodies included</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Accordion: Important Instructions */}
+            <div className="info-accordion">
+              <button
+                type="button"
+                className={`accordion-header ${openAccordions.instructions ? 'open' : ''}`}
+                onClick={() => toggleAccordion('instructions')}
+              >
+                <span>⚠️ Important Instructions</span>
+                <span className="accordion-chevron">{openAccordions.instructions ? '−' : '+'}</span>
+              </button>
+              {openAccordions.instructions && (
+                <div className="accordion-body">
+                  <ul className="instruction-list">
+                    <li>Please ensure that the <strong>"Sender Name"</strong> field is filled correctly while submitting payment details.</li>
+                    <li>Refer to the <strong>"View Sample"</strong> section for guidance before completing your payment.</li>
+                    <li>A screenshot of the payment confirmation must be uploaded to complete your registration.</li>
+                    <li>Outside food and beverages are strictly prohibited inside the venue.</li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Accordion: Payment Details */}
+            <div className="info-accordion">
+              <button
+                type="button"
+                className={`accordion-header ${openAccordions.payment ? 'open' : ''}`}
+                onClick={() => toggleAccordion('payment')}
+              >
+                <span>💳 Payment Details</span>
+                <span className="accordion-chevron">{openAccordions.payment ? '−' : '+'}</span>
+              </button>
+              {openAccordions.payment && (
+                <div className="accordion-body">
+                  <p className="payment-info-text">
+                    Scan the QR code using any UPI app to proceed with payment.
+                    After completing the transaction, enter the required details below and upload your payment proof.
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="admin-access-container">
@@ -210,18 +360,27 @@ const RegisterPage = () => {
               {/* 1. Base Personal Info */}
               {[
                 { label: "Full Name", type: "text", field: "fullName" },
-                { label: "Contact Number", type: "tel", field: "contact" },
+                { label: "Contact Number", type: "tel", field: "contact", inputMode: "numeric", pattern: "[0-9]*" },
                 { label: "Email ID", type: "email", field: "email" },
               ].map((field, i) => (
                 <div className="field-wrapper" key={field.field} style={{ "--index": i }}>
                   <input
                     type={field.type}
+                    inputMode={field.inputMode || undefined}
+                    pattern={field.pattern || undefined}
                     className={formData[field.field] ? "has-value" : ""}
                     value={formData[field.field]}
                     onChange={(e) => handleChange(field.field, e.target.value)}
                   />
                   <label>{field.label}</label>
                   <div className="underline"></div>
+                  {/* Inline validation hints */}
+                  {field.field === 'contact' && formData.contact && !/^\d+$/.test(formData.contact) && (
+                    <p className="field-error">Please enter digits only</p>
+                  )}
+                  {field.field === 'email' && formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) && (
+                    <p className="field-error">Please enter a valid email</p>
+                  )}
                 </div>
               ))}
 
@@ -252,11 +411,13 @@ const RegisterPage = () => {
               {formData.collegeType === "djsce" && [
                 { label: "Branch", type: "text", field: "branch" },
                 { label: "Roll Number", type: "text", field: "rollNumber" },
-                { label: "SAP ID", type: "text", field: "sapId" },
+                { label: "SAP ID", type: "text", field: "sapId", inputMode: "numeric", pattern: "[0-9]*" },
               ].map((field, i) => (
                 <div className="field-wrapper scale-in" key={field.field} style={{ "--index": 0 }}>
                   <input
                     type={field.type}
+                    inputMode={field.inputMode || undefined}
+                    pattern={field.pattern || undefined}
                     className={formData[field.field] ? "has-value" : ""}
                     value={formData[field.field]}
                     onChange={(e) => handleChange(field.field, e.target.value)}
@@ -294,11 +455,25 @@ const RegisterPage = () => {
                       <span className="payment-qr-subtitle">Use any UPI app</span>
                     </div>
                     <img
-                      src="/meet_qr.jpeg"
+                      src="/kartik_qr.png"
                       alt="TEDxDJSCE payment QR"
                       className="payment-qr-image"
                       loading="lazy"
                     />
+                    <div className="upi-copy-row">
+                      <div className="upi-copy-text-wrap">
+                        <span className="upi-copy-label">UPI ID</span>
+                        <span className="upi-copy-id">{UPI_ID}</span>
+                      </div>
+                      <button
+                        type="button"
+                        className={`upi-copy-btn ${isUpiCopied ? "copied" : ""}`}
+                        onClick={copyUpiId}
+                        aria-label="Copy UPI ID"
+                      >
+                        {isUpiCopied ? "Copied" : "Copy"}
+                      </button>
+                    </div>
                   </div>
 
                   <div className="ticket-selector" style={{ "--index": 1 }}>
@@ -321,21 +496,17 @@ const RegisterPage = () => {
                     )}
                   </div>
 
-                  {[
-                    { label: "Transaction ID", type: "text", field: "transactionId" },
-                    { label: "Sender Name", type: "text", field: "senderName" },
-                  ].map((field, i) => (
-                    <div className="field-wrapper" key={field.field} style={{ "--index": 1 + i }}>
-                      <input
-                        type={field.type}
-                        className={formData[field.field] ? "has-value" : ""}
-                        value={formData[field.field]}
-                        onChange={(e) => handleChange(field.field, e.target.value)}
-                      />
-                      <label>{field.label}</label>
-                      <div className="underline"></div>
-                    </div>
-                  ))}
+                  <div className="field-wrapper" style={{ "--index": 1 }}>
+                    <input
+                      type="text"
+                      className={formData.senderName ? "has-value" : ""}
+                      value={formData.senderName}
+                      onChange={(e) => handleChange('senderName', e.target.value)}
+                    />
+                    <label>Sender Name</label>
+                    <div className="underline"></div>
+                    <p className="field-note">The name of the person from whose account the payment was made.</p>
+                  </div>
 
                   {/* Image Upload Dropbox */}
                   <div
@@ -387,8 +558,8 @@ const RegisterPage = () => {
                     </div>
                   </div>
 
-                  <button onClick={handleSubmit} className="prime-button">
-                    <span>RESERVE SEAT</span>
+                  <button onClick={handleSubmit} className="prime-button" disabled={isSubmitting || hasSubmitted}>
+                    <span>{hasSubmitted ? 'SUBMITTED \u2713' : isSubmitting ? 'SUBMITTING...' : 'RESERVE SEAT'}</span>
                     <div className="button-blob"></div>
                   </button>
                 </div>
@@ -398,6 +569,15 @@ const RegisterPage = () => {
         </div>
       </div>
     </div>
+
+    {/* Toast Notification */}
+    {toast && (
+      <div className={`toast-notification toast-${toast.type}`}>
+        <span className="toast-message">{toast.message}</span>
+        <button className="toast-close" onClick={() => setToast(null)}>✕</button>
+      </div>
+    )}
+    </>
   );
 };
 
