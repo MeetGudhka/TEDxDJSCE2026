@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import "./RegisterPage.css";
 import Aurora from "./components/Aurora";
 
+import qrImage from "../public/kartik_qr.png";
+import sampleImage from "../public/sample_image.jpg";
+
 const DEFAULT_FORM_DATA = {
   fullName: "",
   contact: "",
@@ -455,7 +458,7 @@ const RegisterPage = () => {
                       <span className="payment-qr-subtitle">Use any UPI app</span>
                     </div>
                     <img
-                      src="/kartik_qr.png"
+                      src={qrImage}
                       alt="TEDxDJSCE payment QR"
                       className="payment-qr-image"
                       loading="lazy"
@@ -522,7 +525,7 @@ const RegisterPage = () => {
 
                     {showSample && (
                       <div className="sample-image-container">
-                        <img src="/sample_image.jpg" alt="Sample payment screenshot" className="sample-image-preview" loading="lazy" />
+                        <img src={sampleImage} alt="Sample payment screenshot" className="sample-image-preview" loading="lazy" />
                         <p className="sample-hint">Please ensure Transaction ID and Amount are clearly visible.</p>
                       </div>
                     )}

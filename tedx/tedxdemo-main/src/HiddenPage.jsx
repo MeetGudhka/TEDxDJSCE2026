@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode/lib/browser.js';
 import './HiddenPage.css';
+import tedxTemplate from '../public/tedx.jpeg';
 
 // Canvas Ticket Generation Helper
 const generateTicketBase64 = async (name, ticketId) => {
@@ -9,8 +10,7 @@ const generateTicketBase64 = async (name, ticketId) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     const templateImg = new Image();
-    templateImg.crossOrigin = "anonymous";
-    templateImg.src = "/tedx.jpeg"; // Make sure tedx.jpeg is in public/ folder
+    templateImg.src = tedxTemplate; // Imported via Vite to ensure correct production path
 
     templateImg.onload = async () => {
       canvas.width = templateImg.width;
