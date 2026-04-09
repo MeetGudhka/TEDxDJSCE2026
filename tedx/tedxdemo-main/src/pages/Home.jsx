@@ -40,9 +40,11 @@ const Home = () => {
             </div>
 
             {/* Main Content Section */}
-            <div className="relative z-30 -mt-20 pb-20 px-4 md:px-8 space-y-20">
+            <div className="relative z-10 pb-20 pt-5 space-y-20">
                 <ComingSoon />
-                <CountdownTimer targetDate="2026-04-21T09:00:00" />
+                <div className="px-4 md:px-8">
+                    <CountdownTimer targetDate="2026-04-21T09:00:00" />
+                </div>
             </div>
         </div>
     );

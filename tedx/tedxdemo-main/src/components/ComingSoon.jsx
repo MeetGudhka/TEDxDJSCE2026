@@ -1,216 +1,495 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './ComingSoon.css';
 
-const ComingSoon = () => {
-    const features = [
-        {
-            icon: (
-                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="28" y="16" width="8" height="16" rx="4" stroke="url(#grad1)" strokeWidth="2.5" fill="none" />
-                    <path d="M20 28C20 28 20 32 24 36C26 38 28 40 32 40C36 40 38 38 40 36C44 32 44 28 44 28" stroke="url(#grad1)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                    <line x1="32" y1="40" x2="32" y2="48" stroke="url(#grad1)" strokeWidth="2.5" strokeLinecap="round" />
-                    <line x1="24" y1="48" x2="40" y2="48" stroke="url(#grad1)" strokeWidth="2.5" strokeLinecap="round" />
-                    <defs>
-                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#eb0028" />
-                            <stop offset="100%" stopColor="#ff4d6d" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            ),
-            title: 'Inspiring Speakers',
-            description: 'World-class thought leaders'
-        },
-        {
-            icon: (
-                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="32" cy="26" r="10" stroke="url(#grad2)" strokeWidth="2.5" fill="none" />
-                    <path d="M32 16V12M44 26H48M20 26H16M40.5 15.5L43.5 12.5M23.5 15.5L20.5 12.5" stroke="url(#grad2)" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M26 36C26 36 26 38 28 40C29 41 30 42 32 42C34 42 35 41 36 40C38 38 38 36 38 36V34C38 34 36 32 32 32C28 32 26 34 26 34V36Z" stroke="url(#grad2)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                    <line x1="28" y1="42" x2="36" y2="42" stroke="url(#grad2)" strokeWidth="2.5" strokeLinecap="round" />
-                    <defs>
-                        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#ff4d6d" />
-                            <stop offset="100%" stopColor="#eb0028" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            ),
-            title: 'Big Ideas',
-            description: 'Ideas worth spreading'
-        },
-        {
-            icon: (
-                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="32" cy="18" r="5" stroke="url(#grad3)" strokeWidth="2.5" fill="none" />
-                    <circle cx="18" cy="36" r="4" stroke="url(#grad3)" strokeWidth="2.5" fill="none" />
-                    <circle cx="46" cy="36" r="4" stroke="url(#grad3)" strokeWidth="2.5" fill="none" />
-                    <circle cx="26" cy="48" r="3.5" stroke="url(#grad3)" strokeWidth="2.5" fill="none" />
-                    <circle cx="38" cy="48" r="3.5" stroke="url(#grad3)" strokeWidth="2.5" fill="none" />
-                    <line x1="30" y1="22" x2="21" y2="33" stroke="url(#grad3)" strokeWidth="2.5" strokeLinecap="round" />
-                    <line x1="34" y1="22" x2="43" y2="33" stroke="url(#grad3)" strokeWidth="2.5" strokeLinecap="round" />
-                    <line x1="20" y1="39" x2="27" y2="45" stroke="url(#grad3)" strokeWidth="2.5" strokeLinecap="round" />
-                    <line x1="44" y1="39" x2="37" y2="45" stroke="url(#grad3)" strokeWidth="2.5" strokeLinecap="round" />
-                    <defs>
-                        <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#eb0028" />
-                            <stop offset="100%" stopColor="#ff1a40" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            ),
-            title: 'Networking',
-            description: 'Connect with innovators'
-        },
-        {
-            icon: (
-                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="24" cy="22" r="5" stroke="url(#grad4)" strokeWidth="2.5" fill="none" />
-                    <circle cx="40" cy="22" r="5" stroke="url(#grad4)" strokeWidth="2.5" fill="none" />
-                    <circle cx="32" cy="38" r="5" stroke="url(#grad4)" strokeWidth="2.5" fill="none" />
-                    <path d="M28 30L24 34" stroke="url(#grad4)" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M36 30L40 34" stroke="url(#grad4)" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M28 42L24 46M36 42L40 46" stroke="url(#grad4)" strokeWidth="2.5" strokeLinecap="round" />
-                    <circle cx="32" cy="32" r="14" stroke="url(#grad4)" strokeWidth="2" strokeDasharray="4 4" fill="none" opacity="0.5" />
-                    <defs>
-                        <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#ff1a40" />
-                            <stop offset="100%" stopColor="#eb0028" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            ),
-            title: 'Experiential Learning',
-            description: 'Real life insights'
+// -------------------------------------------------------------
+// LIGHT WAVES BACKGROUND COMPONENT (Consolidated)
+// -------------------------------------------------------------
+const LightWavesBackground = ({
+    className = "",
+    children,
+    colors = ["#e62b1e", "#9b1c14", "#d32f2f", "#800000", "#ff4444"],
+    speed = 1,
+    intensity = 0.6,
+}) => {
+    const canvasRef = useRef(null)
+    const containerRef = useRef(null)
+    const wavesRef = useRef([])
+    const animationRef = useRef()
+    const startTimeRef = useRef(Date.now())
+
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+        if (!result) return { r: 255, g: 255, b: 255 }
+        return {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
         }
-    ];
+    }
+
+    const initWaves = useCallback(
+        (height) => {
+            const waves = []
+            const waveCount = 5
+            for (let i = 0; i < waveCount; i++) {
+                waves.push({
+                    y: height * (0.4 + (i / waveCount) * 0.45), // Shifted down (0.4 instead of 0.3)
+                    amplitude: height * (0.13 + Math.random() * 0.13), // Slightly reduced amplitude to avoid hitting edges
+                    frequency: 0.002 + Math.random() * 0.002,
+                    speed: (0.2 + Math.random() * 0.3) * (i % 2 === 0 ? 1 : -1),
+                    phase: Math.random() * Math.PI * 2,
+                    color: colors[i % colors.length],
+                    opacity: 0.15 + Math.random() * 0.1,
+                })
+            }
+            wavesRef.current = waves
+        },
+        [colors],
+    )
+
+    useEffect(() => {
+        const canvas = canvasRef.current
+        const container = containerRef.current
+        if (!canvas || !container) return
+        const ctx = canvas.getContext("2d")
+        if (!ctx) return
+
+        let width = 0
+        let height = 0
+
+        const updateSize = () => {
+            const rect = container.getBoundingClientRect()
+            width = rect.width
+            height = rect.height
+            canvas.width = width
+            canvas.height = height
+            initWaves(height)
+        }
+        updateSize()
+
+        const ro = new ResizeObserver(updateSize)
+        ro.observe(container)
+
+        const draw = () => {
+            const time = (Date.now() - startTimeRef.current) * 0.001 * speed
+            const bgGradient = ctx.createLinearGradient(0, 0, 0, height)
+            bgGradient.addColorStop(0, "#000000")
+            bgGradient.addColorStop(0.5, "#0a0000")
+            bgGradient.addColorStop(1, "#000000")
+            ctx.fillStyle = bgGradient
+            ctx.fillRect(0, 0, width, height)
+
+            ctx.globalCompositeOperation = "lighter"
+            const glowSpots = [
+                { x: width * 0.2, y: height * 0.3, radius: Math.min(width, height) * 0.4, color: colors[0] },
+                { x: width * 0.8, y: height * 0.6, radius: Math.min(width, height) * 0.35, color: colors[1] },
+                { x: width * 0.5, y: height * 0.8, radius: Math.min(width, height) * 0.3, color: colors[2] },
+            ]
+
+            for (const spot of glowSpots) {
+                const rgb = hexToRgb(spot.color)
+                const gradient = ctx.createRadialGradient(
+                    spot.x + Math.sin(time * 0.3) * 50, spot.y + Math.cos(time * 0.2) * 30, 0,
+                    spot.x + Math.sin(time * 0.3) * 50, spot.y + Math.cos(time * 0.2) * 30, spot.radius
+                )
+                gradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.08 * intensity})`)
+                gradient.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.03 * intensity})`)
+                gradient.addColorStop(1, "transparent")
+                ctx.fillStyle = gradient
+                ctx.fillRect(0, 0, width, height)
+            }
+
+            for (const wave of wavesRef.current) {
+                const rgb = hexToRgb(wave.color)
+                ctx.beginPath()
+                ctx.moveTo(0, height)
+                for (let x = 0; x <= width; x += 5) {
+                    const y = wave.y + Math.sin(x * wave.frequency + time * wave.speed + wave.phase) * wave.amplitude +
+                        Math.sin(x * wave.frequency * 0.5 + time * wave.speed * 0.7 + wave.phase * 1.3) * wave.amplitude * 0.5
+                    if (x === 0) ctx.moveTo(x, y)
+                    else ctx.lineTo(x, y)
+                }
+                ctx.lineTo(width, height)
+                ctx.lineTo(0, height)
+                ctx.closePath()
+
+                const waveGradient = ctx.createLinearGradient(0, wave.y - wave.amplitude, 0, height)
+                waveGradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${wave.opacity * intensity})`)
+                waveGradient.addColorStop(0.3, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${wave.opacity * 0.5 * intensity})`)
+                waveGradient.addColorStop(1, "transparent")
+                ctx.fillStyle = waveGradient
+                ctx.fill()
+            }
+
+            ctx.globalCompositeOperation = "source-over"
+            const firstColor = hexToRgb(colors[0])
+            const topGlow = ctx.createLinearGradient(0, 0, 0, height * 0.4)
+            topGlow.addColorStop(0, `rgba(${firstColor.r}, ${firstColor.g}, ${firstColor.b}, ${0.05 * intensity})`)
+            topGlow.addColorStop(1, "transparent")
+            ctx.fillStyle = topGlow
+            ctx.fillRect(0, 0, width, height * 0.4)
+
+            animationRef.current = requestAnimationFrame(draw)
+        }
+        animationRef.current = requestAnimationFrame(draw)
+        return () => {
+            if (animationRef.current) cancelAnimationFrame(animationRef.current)
+            ro.disconnect()
+        }
+    }, [colors, speed, intensity, initWaves])
 
     return (
-        <div className="coming-soon-container">
-            <motion.div
-                className="coming-soon-wrapper"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-            >
-                <div className="particles">
-                    {[...Array(20)].map((_, i) => (
-                        <div
-                            key={i}
-                            className="particle"
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                                animationDelay: `${Math.random() * 5}s`,
-                                animationDuration: `${5 + Math.random() * 10}s`
-                            }}
-                        />
-                    ))}
-                </div>
-
-                <div className="content-grid">
-                    <motion.div
-                        className="main-section"
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                    >
-                        <motion.h1
-                            className="main-title"
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.5 }}
-                        >
-                            <span className="highlight-text"> THE QUIET THRESHOLD </span>
-                        </motion.h1>
-
-                        <motion.p
-                            className="main-description"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.6, delay: 0.7 }}
-                        >
-                            <span className="highlight-text" style={{ fontWeight: '800', fontSize: '1.3em' }}>TEDxDJSCE</span> - “The Quiet Threshold” captures those subtle moments just before life changes—when everything feels still yet uncertain. It’s about looking inward, finding quiet strength, and having the courage to step forward, even when the path isn’t clear. Sometimes, the biggest transformations begin softly, in silence.
-                        </motion.p>
-                    </motion.div>
-
-                    <motion.div
-                        className="features-section"
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.4 }}
-                    >
-                        <div className="features-grid">
-                            {features.map((feature, index) => (
-                                <motion.div
-                                    key={index}
-                                    className="feature-card"
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{
-                                        duration: 0.5,
-                                        delay: 1 + index * 0.1,
-                                        type: "spring",
-                                        stiffness: 100
-                                    }}
-                                    whileHover={{
-                                        scale: 1.05,
-                                        transition: { duration: 0.3 }
-                                    }}
-                                >
-                                    <div className="feature-icon-wrapper">
-                                        <div className="feature-icon">{feature.icon}</div>
-                                        <div className="icon-glow"></div>
-                                    </div>
-                                    <h3 className="feature-title">{feature.title}</h3>
-                                    <p className="feature-description">{feature.description}</p>
-                                    <div className="feature-shine"></div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.div>
-                </div>
-
-                <div className="deco-circle circle-1"></div>
-                <div className="deco-circle circle-2"></div>
-                <div className="deco-circle circle-3"></div>
-
-                <motion.div
-                    className="wave-container"
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 1.2 }}
-                >
-                    <svg className="wave" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                        <path
-                            d="M0,60 C200,100 400,20 600,50 C800,80 1000,10 1200,60 L1200,120 L0,120 Z"
-                            fill="url(#waveGradient)"
-                        >
-                            <animate
-                                attributeName="d"
-                                dur="8s"
-                                repeatCount="indefinite"
-                                values="
-                                    M0,60 C200,100 400,20 600,50 C800,80 1000,10 1200,60 L1200,120 L0,120 Z;
-                                    M0,50 C200,20 400,90 600,60 C800,30 1000,100 1200,50 L1200,120 L0,120 Z;
-                                    M0,70 C200,30 400,100 600,40 C800,10 1000,80 1200,70 L1200,120 L0,120 Z;
-                                    M0,60 C200,100 400,20 600,50 C800,80 1000,10 1200,60 L1200,120 L0,120 Z
-                                "
-                            />
-                        </path>
-                        <defs>
-                            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="var(--tedx-red)" stopOpacity="0.3" />
-                                <stop offset="50%" stopColor="var(--tedx-red-light)" stopOpacity="0.5" />
-                                <stop offset="100%" stopColor="var(--gradient-end)" stopOpacity="0.3" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </motion.div>
-            </motion.div>
+        <div ref={containerRef} className={`light-waves-container ${className}`}>
+            <canvas ref={canvasRef} className="light-waves-canvas" />
+            <div className="light-waves-noise" />
+            <div className="light-waves-vignette" />
+            {children && <div className="light-waves-content">{children}</div>}
         </div>
+    )
+}
+
+// -------------------------------------------------------------
+// EMBER PARTICLES COMPONENT (Restored for Upper Half Elegance)
+// -------------------------------------------------------------
+const CanvasParticles3D = ({ mousePos }) => {
+    const canvasRef = useRef(null);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+        let particles = [];
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        const resize = () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initParticles();
+        };
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.z = Math.random();
+                this.baseSize = (this.z * 1.5) + 0.5;
+                this.size = this.baseSize;
+                this.speedX = ((Math.random() - 0.5) * 0.2) * (this.z + 0.1);
+                this.speedY = (-Math.random() * 0.3 - 0.1) * (this.z + 0.1);
+                this.opacity = this.z * 0.4 + 0.1;
+
+                // Deep red/fiery mix for TEDx brand
+                const r = 255;
+                const g = Math.floor(Math.random() * 80);
+                const b = Math.floor(Math.random() * 20);
+                this.color = `${r}, ${g}, ${b}`;
+            }
+
+            update(mx, my) {
+                const parallaxX = (mx - width / 2) * -0.01 * this.z;
+                const parallaxY = (my - height / 2) * -0.01 * this.z;
+
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                this.drawX = this.x + parallaxX;
+                this.drawY = this.y + parallaxY;
+
+                if (this.y < -50) {
+                    this.y = height + 50;
+                    this.x = Math.random() * width;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.drawX, this.drawY, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                ctx.fill();
+                if (this.z > 0.8) {
+                    ctx.shadowBlur = 4;
+                    ctx.shadowColor = `rgba(${this.color}, ${this.opacity})`;
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+            }
+        }
+
+        const initParticles = () => {
+            particles = [];
+            const count = Math.min(Math.floor((width * height) / 10000), 80); // Sparsely grouped embers
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        };
+
+        const animate = () => {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update(mousePos.current.x, mousePos.current.y);
+                p.draw();
+            });
+            animationFrameId = requestAnimationFrame(animate);
+        };
+
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+
+        return () => {
+            window.removeEventListener('resize', resize);
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, [mousePos]);
+
+    return <canvas ref={canvasRef} className="qt-particles" />;
+};
+
+
+// -------------------------------------------------------------
+// PHYSICS CHARACTER COMPONENT 
+// -------------------------------------------------------------
+const PhysicsChar = ({ char, charIndex }) => {
+    const charRef = useRef(null);
+
+    const state = useRef({
+        x: 0, y: 0, rot: 0, scale: 1,
+        vx: 0, vy: 0, vrot: 0, vscale: 0,
+        targetX: 0, targetY: 0, targetRot: 0, targetScale: 1
+    });
+
+    useEffect(() => {
+        let rafId;
+        const spring = 0.1;
+        const friction = 0.8;
+
+        state.current.x = (Math.random() - 0.5) * 400;
+        state.current.y = (Math.random() - 0.5) * 400 + 200;
+        state.current.rot = (Math.random() - 0.5) * 180;
+        state.current.scale = 0;
+
+        setTimeout(() => {
+            state.current.targetX = 0;
+            state.current.targetY = 0;
+            state.current.targetRot = 0;
+            state.current.targetScale = 1;
+        }, 100 + charIndex * 30);
+
+        const animate = () => {
+            const ax = (state.current.targetX - state.current.x) * spring;
+            const ay = (state.current.targetY - state.current.y) * spring;
+            const arot = (state.current.targetRot - state.current.rot) * spring;
+            const ascale = (state.current.targetScale - state.current.scale) * spring;
+
+            state.current.vx += ax;
+            state.current.vy += ay;
+            state.current.vrot += arot;
+            state.current.vscale += ascale;
+
+            state.current.vx *= friction;
+            state.current.vy *= friction;
+            state.current.vrot *= friction;
+            state.current.vscale *= friction;
+
+            state.current.x += state.current.vx;
+            state.current.y += state.current.vy;
+            state.current.rot += state.current.vrot;
+            state.current.scale += state.current.vscale;
+
+            if (charRef.current) {
+                charRef.current.style.transform = `translate3d(${state.current.x}px, ${state.current.y}px, 0) rotate(${state.current.rot}deg) scale(${state.current.scale})`;
+            }
+
+            rafId = requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        return () => cancelAnimationFrame(rafId);
+    }, [charIndex]);
+
+    return (
+        <span ref={charRef} className="qt-physics-char">
+            {char}
+        </span>
     );
 };
 
-export default ComingSoon;
+// -------------------------------------------------------------
+// MAIN COMPONENT
+// -------------------------------------------------------------
+const QuietThreshold = () => {
+    const sectionRef = useRef(null);
+    const cardRef = useRef(null);
+    const titleWrapperRef = useRef(null);
+    const paragraphRef = useRef(null);
+    const globalMousePos = useRef({ x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 });
+
+    const [hasLoaded, setHasLoaded] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setHasLoaded(true);
+        }, 100);
+    }, []);
+
+    const titleWords = "The Quiet Threshold".split(" ");
+
+    const handleInteraction = useCallback((e) => {
+        let x, y;
+        if (e.touches && e.touches[0]) {
+            x = e.touches[0].clientX;
+            y = e.touches[0].clientY;
+        } else {
+            x = e.clientX;
+            y = e.clientY;
+        }
+
+        if (x === undefined || y === undefined) return;
+
+        // --- PHYSICS MAGNETIC SCATTER EFFECT ---
+        globalMousePos.current = { x, y };
+
+        if (titleWrapperRef.current) {
+            const chars = titleWrapperRef.current.querySelectorAll('.qt-physics-char');
+
+            chars.forEach((charEl) => {
+                const rect = charEl.getBoundingClientRect();
+                const charX = rect.left + rect.width / 2;
+                const charY = rect.top + rect.height / 2;
+
+                const dx = charX - x;
+                const dy = charY - y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // Slightly smaller interaction radius on mobile for precision
+                const maxDist = e.touches ? 100 : 180; // Reduced from 120
+                if (dist < maxDist) {
+                    const force = (maxDist - dist) / maxDist;
+                    const nx = (dx / dist) * force * (e.touches ? 40 : 120); // Reduced from 80
+                    const ny = (dy / dist) * force * (e.touches ? 35 : 100); // Reduced from 70
+                    const nrot = (nx > 0 ? 1 : -1) * force * (e.touches ? 30 : 60); // Reduced rot
+
+                    charEl.style.transform = `translate3d(${nx}px, ${ny}px, 0) rotate(${nrot}deg) scale(1.15)`;
+                    charEl.style.color = '#ffffff';
+                    charEl.style.textShadow = `0 0 20px rgba(255,255,255,0.7), 0 0 40px rgba(230,43,30,0.6)`;
+                } else {
+                    charEl.style.transform = `translate3d(0px, 0px, 0) rotate(0deg) scale(1)`;
+                    charEl.style.color = '#e2e8f0';
+                    charEl.style.textShadow = 'none';
+                }
+            });
+        }
+
+        // --- Dynamic Reading Spotlight for Paragraph ---
+        if (paragraphRef.current) {
+            const rect = paragraphRef.current.getBoundingClientRect();
+            const relativeX = x - rect.left;
+            const relativeY = y - rect.top;
+            paragraphRef.current.style.setProperty('--mouse-x', `${relativeX}px`);
+            paragraphRef.current.style.setProperty('--mouse-y', `${relativeY}px`);
+        }
+
+        // --- 3D Environment Tilt ---
+        if (sectionRef.current) {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const rotateX = ((y - centerY) / centerY) * -5;
+            const rotateY = ((x - centerX) / centerX) * 5;
+            sectionRef.current.style.setProperty('--env-rot-x', `${rotateX}deg`);
+            sectionRef.current.style.setProperty('--env-rot-y', `${rotateY}deg`);
+            sectionRef.current.style.setProperty('--mouse-x-norm', x / window.innerWidth);
+            sectionRef.current.style.setProperty('--mouse-y-norm', y / window.innerHeight);
+        }
+
+    }, []);
+
+    const handleInteractionEnd = () => {
+        if (titleWrapperRef.current) {
+            const chars = titleWrapperRef.current.querySelectorAll('.qt-physics-char');
+            chars.forEach(charEl => {
+                charEl.style.transform = `translate3d(0px, 0px, 0) rotate(0deg) scale(1)`;
+                charEl.style.color = '#e2e8f0';
+                charEl.style.textShadow = 'none';
+            });
+        }
+    };
+
+    let globalCharIndex = 0;
+
+    return (
+        <LightWavesBackground>
+            <section
+                ref={sectionRef}
+                className={`qt-section ${hasLoaded ? 'loaded' : ''}`}
+                onMouseMove={handleInteraction}
+                onMouseLeave={handleInteractionEnd}
+                onTouchMove={handleInteraction}
+                onTouchEnd={handleInteractionEnd}
+                onTouchStart={handleInteraction}
+            >
+                {/* ENHANCED 3D BACKGROUND LAYER */}
+                <div className="qt-env-3d">
+                    <CanvasParticles3D mousePos={globalMousePos} />
+                    <div className="qt-threshold-ring qt-ring-1"></div>
+                    <div className="qt-threshold-ring qt-ring-2"></div>
+                    <div className="qt-threshold-ring qt-ring-3"></div>
+                </div>
+
+                <div className="qt-content-3d">
+                    {/* Title Container */}
+                    <div className="qt-title-scatter-wrapper" ref={titleWrapperRef}>
+                        {titleWords.map((word, wIdx) => {
+                            return (
+                                <span key={`w-${wIdx}`} className="qt-title-word">
+                                    {word.split('').map((char, cIdx) => {
+                                        const delay = globalCharIndex * 0.04;
+                                        globalCharIndex++;
+                                        return (
+                                            <span
+                                                key={`c-${cIdx}`}
+                                                className="qt-physics-char qt-load-stagger"
+                                                style={{ '--delay': `${delay}s` }}
+                                            >
+                                                {char}
+                                            </span>
+                                        );
+                                    })}
+                                    &nbsp;
+                                </span>
+                            );
+                        })}
+                    </div>
+
+                    {/* Sophisticated Typographic Paragraph */}
+                    <div className="qt-pro-text-wrapper" ref={cardRef}>
+                        <div className="qt-pro-text-content" ref={paragraphRef}>
+                            <div className="qt-reading-spotlight"></div>
+
+                            <p className="qt-lead-paragraph">
+                                <span className="qt-dropcap">“T</span>he Quiet Threshold” is about those small, often overlooked moments when something in our life is about to change.
+                            </p>
+
+                            <p className="qt-body-paragraph">
+                                It’s the pause before taking a big step and the feeling of
+                                <span className="qt-highlight"> uncertainty before new beginnings.</span> This theme focuses on looking inward, finding
+                                <span className="qt-highlight"> strength in stillness,</span> and having the courage to move forward even when things feel unclear.
+                            </p>
+
+                            <p className="qt-body-paragraph">
+                                It reminds us that change doesn’t always come with noise or big moments—sometimes it happens quietly and slowly, right when we’re on the cusp of stepping into a new phase filled with
+                                <span className="qt-highlight"> endless possibilities.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </LightWavesBackground>
+    );
+};
+
+export default QuietThreshold;

@@ -45,9 +45,17 @@ const CountdownTimer = ({ targetDate = '2026-03-15T10:00:00' }) => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
             >
+                <div className="countdown-vignette"></div>
+                <div className="threshold-aura"></div>
+                <div className="threshold-scanline"></div>
+                <div className="threshold-ripples">
+                    <div className="ripple"></div>
+                    <div className="ripple"></div>
+                    <div className="ripple"></div>
+                    <div className="ripple"></div>
+                </div>
                 <div className="bg-orb orb-1"></div>
                 <div className="bg-orb orb-2"></div>
-                <div className="bg-orb orb-3"></div>
 
                 <motion.h2
                     className="countdown-title"
