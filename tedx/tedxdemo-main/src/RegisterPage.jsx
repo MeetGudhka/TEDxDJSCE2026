@@ -58,7 +58,7 @@ const RegisterPage = () => {
 
   const showToast = (type, message) => {
     setToast({ type, message });
-    setTimeout(() => setToast(null), 5000);
+    setTimeout(() => setToast(null), type === 'error' ? 8000 : 5000);
   };
 
   // UPI copy
@@ -183,10 +183,15 @@ const RegisterPage = () => {
     setIsSubmitting(true);
 
     try {
+      const payload = { ...formData, screenshot: screenshotData, action: 'create' };
+      if (payload.collegeType === 'djsce') {
+        payload.collegeName = 'D.J. Sanghvi';
+      }
+
       const response = await fetch('https://script.google.com/macros/s/AKfycbyedMQqm2f80lfir2cmxmRI_dFARNhrA57elkkdwvlzvpoUCQ3CP_ZGJtqxbRXzLnBmEQ/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ ...formData, screenshot: screenshotData, action: 'create' })
+        body: JSON.stringify(payload)
       });
 
       let data;
@@ -205,11 +210,11 @@ const RegisterPage = () => {
         if (fileInputRef.current) fileInputRef.current.value = "";
         localStorage.removeItem('registrationProgress');
       } else {
-        showToast('error', '\u274c Error: ' + (data.message || 'Something went wrong. Please try again.'));
+        showToast('error', '\u274c Error: ' + (data.message || 'Something went wrong.') + ' Contact Support: 9619560224 / 9145671250');
       }
     } catch (err) {
       console.error("Error registering:", err);
-      showToast('error', '\u274c Registration failed: ' + err.message);
+      showToast('error', '\u274c Registration failed: ' + err.message + '. Need help? Call/WhatsApp: 9619560224 / 9145671250');
     } finally {
       setIsSubmitting(false);
     }
@@ -343,6 +348,13 @@ const RegisterPage = () => {
                       Scan the QR code using any UPI app to proceed with payment.
                       After completing the transaction, enter the required details below and upload your payment proof.
                     </p>
+                    <div className="support-box" style={{ marginTop: '15px', padding: '15px', border: '1px solid rgba(235, 0, 40, 0.4)', backgroundColor: 'rgba(235, 0, 40, 0.05)', borderRadius: '8px' }}>
+                      <p style={{ margin: 0, fontSize: '0.95rem', color: '#fff', lineHeight: '1.5' }}>
+                        <strong style={{ color: '#eb0028', display: 'block', marginBottom: '6px', fontSize: '1.05rem' }}>📞 Need Help?</strong>
+                        In case of any registration issues, contact Support (Call or WhatsApp):<br />
+                        <strong style={{ color: '#eb0028' }}>9619560224</strong> / <strong style={{ color: '#eb0028' }}>9145671250</strong>
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
