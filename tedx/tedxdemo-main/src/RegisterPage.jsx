@@ -424,24 +424,47 @@ const RegisterPage = () => {
                 </div>
 
                 {/* 3. Conditional College Info */}
-                {formData.collegeType === "djsce" && [
-                  { label: "Branch", type: "text", field: "branch" },
-                  { label: "Roll Number", type: "text", field: "rollNumber" },
-                  { label: "SAP ID", type: "text", field: "sapId", inputMode: "numeric", pattern: "[0-9]*" },
-                ].map((field, i) => (
-                  <div className="field-wrapper scale-in" key={field.field} style={{ "--index": 0 }}>
-                    <input
-                      type={field.type}
-                      inputMode={field.inputMode || undefined}
-                      pattern={field.pattern || undefined}
-                      className={formData[field.field] ? "has-value" : ""}
-                      value={formData[field.field]}
-                      onChange={(e) => handleChange(field.field, e.target.value)}
-                    />
-                    <label>{field.label}</label>
-                    <div className="underline"></div>
-                  </div>
-                ))}
+                {formData.collegeType === "djsce" && (
+                  <>
+                    <div className="field-wrapper scale-in" style={{ "--index": 0 }}>
+                      <select
+                        className={formData.branch ? "has-value" : ""}
+                        value={formData.branch}
+                        onChange={(e) => handleChange('branch', e.target.value)}
+                      >
+                        <option value="" disabled hidden></option>
+                        <option value="COMPS">COMPS</option>
+                        <option value="IT">IT</option>
+                        <option value="CSEDS">CSEDS</option>
+                        <option value="EXTC">EXTC</option>
+                        <option value="AIML">AIML</option>
+                        <option value="AIDS">AIDS</option>
+                        <option value="MECH">MECH</option>
+                        <option value="ICB">ICB</option>
+                      </select>
+                      <label>Branch</label>
+                      <div className="underline"></div>
+                    </div>
+
+                    {[
+                      { label: "Roll Number", type: "text", field: "rollNumber" },
+                      { label: "SAP ID", type: "text", field: "sapId", inputMode: "numeric", pattern: "[0-9]*" },
+                    ].map((field, i) => (
+                      <div className="field-wrapper scale-in" key={field.field} style={{ "--index": i + 1 }}>
+                        <input
+                          type={field.type}
+                          inputMode={field.inputMode || undefined}
+                          pattern={field.pattern || undefined}
+                          className={formData[field.field] ? "has-value" : ""}
+                          value={formData[field.field]}
+                          onChange={(e) => handleChange(field.field, e.target.value)}
+                        />
+                        <label>{field.label}</label>
+                        <div className="underline"></div>
+                      </div>
+                    ))}
+                  </>
+                )}
 
                 {formData.collegeType === "other" && [
                   { label: "College Name", type: "text", field: "collegeName" },

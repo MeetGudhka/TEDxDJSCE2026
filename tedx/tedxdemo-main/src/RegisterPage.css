@@ -839,7 +839,8 @@
   animation-delay: calc(var(--index) * 0.12s + 1.4s);
 }
 
-.field-wrapper input {
+.field-wrapper input,
+.field-wrapper select {
   width: 100%;
   background: rgba(255, 255, 255, 0.02);
   border: none;
@@ -852,9 +853,36 @@
   font-family: var(--font-main);
   font-weight: 400;
   border-radius: 2px 2px 0 0;
+  appearance: none;
 }
 
-.field-wrapper input:focus {
+.field-wrapper select {
+  cursor: pointer;
+}
+
+.field-wrapper select option {
+  background: #1a1a1a;
+  color: white;
+}
+
+.field-wrapper:has(select)::after {
+  content: "▼";
+  position: absolute;
+  right: 15px;
+  top: 25px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+  transition: all 0.3s;
+}
+
+.field-wrapper:has(select:focus)::after {
+  color: var(--red);
+  transform: translateY(-2px) rotate(180deg);
+}
+
+.field-wrapper input:focus,
+.field-wrapper select:focus {
   background: rgba(255, 255, 255, 0.04);
   border-bottom-color: transparent;
   transform: translateY(-2px);
@@ -872,7 +900,9 @@
 }
 
 .field-wrapper input:focus~label,
-.field-wrapper input.has-value~label {
+.field-wrapper input.has-value~label,
+.field-wrapper select:focus~label,
+.field-wrapper select.has-value~label {
   top: -24px;
   left: 0;
   font-size: 0.8rem;
@@ -909,7 +939,8 @@
   }
 }
 
-.field-wrapper input:focus~.underline {
+.field-wrapper input:focus~.underline,
+.field-wrapper select:focus~.underline {
   width: 100%;
 }
 
