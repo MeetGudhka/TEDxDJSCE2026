@@ -80,7 +80,7 @@ const HiddenPage = () => {
     let html5QrCode;
     try {
       html5QrCode = new Html5Qrcode("reader");
-      
+
       html5QrCode.start(
         { facingMode: "environment" },
         {
@@ -90,15 +90,15 @@ const HiddenPage = () => {
         (decodedText) => {
           if (isProcessingRef.current) return;
           isProcessingRef.current = true;
-          
+
           handleQRScan(decodedText);
-          
+
           // Debounce: Allow scanning again after 2 seconds
           setTimeout(() => {
             isProcessingRef.current = false;
           }, 2000);
         },
-        (error) => {} // Ignore continuous errors
+        (error) => { } // Ignore continuous errors
       ).catch(err => {
         console.error("Scanner failed to start", err);
         alert("Camera error. Please ensure you are on HTTPS and granted permissions.");
@@ -121,7 +121,7 @@ const HiddenPage = () => {
   const handleQRScan = (scannedText) => {
     const extractedId = scannedText.replace("TEDxDJSC-", "");
     const student = studentsRef.current.find(s => s._id === extractedId || s.sapId === extractedId);
-    
+
     if (!student) {
       alert("❌ INVALID TICKET - QR code does not match any registered student!");
       return;
@@ -129,7 +129,7 @@ const HiddenPage = () => {
 
     const collegeDisplay = student.collegeType === 'djsce' ? 'D.J. Sanghvi' : (student.collegeName || 'N/A');
     const ticketDisplay = student.ticketType ? student.ticketType.charAt(0).toUpperCase() + student.ticketType.slice(1) : 'Standard';
-    
+
     if (student.status === "verified") {
       const confirm = window.confirm(`✅ VALID TICKET!\n\nName: ${student.fullName}\nCollege: ${collegeDisplay}\nTicket: ${ticketDisplay} Pass\nStatus: Verified\n\nClick OK to Check them in now.`);
       if (confirm) {
@@ -287,15 +287,15 @@ const HiddenPage = () => {
       {/* Search Bar */}
       <div className="search-container">
         <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
-          <button 
-            onClick={() => setIsScannerOpen(!isScannerOpen)} 
-            className="prime-button" 
+          <button
+            onClick={() => setIsScannerOpen(!isScannerOpen)}
+            className="prime-button"
             style={{ width: 'auto', padding: '10px 20px', minHeight: '40px', background: isScannerOpen ? '#555' : 'var(--primary-color)' }}
           >
             {isScannerOpen ? 'Close Scanner' : '📷 Open QR Scanner'}
           </button>
         </div>
-        
+
         {isScannerOpen && (
           <div id="reader" style={{ width: '100%', maxWidth: '500px', margin: '0 auto 20px', background: '#fff', borderRadius: '8px', overflow: 'hidden' }}></div>
         )}
