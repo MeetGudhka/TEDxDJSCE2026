@@ -354,6 +354,14 @@ const HiddenPage = () => {
                 <span className="info-label">College</span>
                 <span className="info-value">{student.collegeType === 'djsce' ? 'D.J. Sanghvi' : (student.collegeName || 'N/A')}</span>
               </div>
+              <div className="info-row">
+                <span className="info-label">Ticket</span>
+                <span className="info-value">{student.ticketType ? `${student.ticketType.charAt(0).toUpperCase() + student.ticketType.slice(1)} (₹${student.amount})` : 'N/A'}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Date</span>
+                <span className="info-value">{student.date ? new Date(student.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'N/A'}</span>
+              </div>
             </div>
 
             <div className="screenshot-section">
