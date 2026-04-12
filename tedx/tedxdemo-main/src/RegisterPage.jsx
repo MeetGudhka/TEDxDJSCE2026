@@ -601,6 +601,9 @@ const RegisterPage = () => {
                       <span>{hasSubmitted ? 'SUBMITTED \u2713' : isSubmitting ? 'SUBMITTING...' : 'RESERVE SEAT'}</span>
                       <div className="button-blob"></div>
                     </button>
+                    <p className="registration-note">
+                      Check your <strong>email</strong> after successful registration. If not found, please check your <strong>spam</strong> folder.
+                    </p>
                   </div>
                 )}
               </div>

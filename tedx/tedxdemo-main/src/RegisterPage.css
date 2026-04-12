@@ -1021,6 +1021,26 @@
   transform: translateY(0);
 }
 
+.registration-note {
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  text-align: center;
+  animation: fadeInUp 0.8s ease forwards;
+  animation-delay: 2.4s;
+  opacity: 0;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.registration-note strong {
+  color: var(--red);
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(235, 0, 40, 0.3);
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
