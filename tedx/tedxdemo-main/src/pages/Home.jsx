@@ -41,7 +41,7 @@ const Home = () => {
             </div>
 
             {/* Main Content Section */}
-            <div className="relative z-10 pb-20 pt-5 space-y-20">
+            <div className="relative z-10 pb-20 pt-5 space-y-10 md:space-y-20">
                 <ComingSoon />
                 <SpeakerSlider />
                 <div className="px-4 md:px-8">

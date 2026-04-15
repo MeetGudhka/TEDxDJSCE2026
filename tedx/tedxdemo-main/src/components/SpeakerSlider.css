@@ -1,19 +1,25 @@
 :root {
     --ted-red: #eb0028;
-    --ted-black: #000000;
-    --ted-gray: #1a1a1a;
+    --ted-black: #050505;
+    --ted-gray: #111111;
     --text-white: #ffffff;
-    --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    --card-width: 300px;
+    --card-height: 400px;
+    --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .speaker-slider-container {
     position: relative;
     width: 100%;
+    min-height: 100vh;
     background-color: var(--ted-black);
     color: var(--text-white);
-    padding: 120px 20px;
+    padding: clamp(60px, 10vh, 120px) 20px;
     overflow: hidden;
-    perspective: 1500px;
+    perspective: 2000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* TEDx Branding */
@@ -21,13 +27,14 @@
     position: relative;
     text-align: center;
     z-index: 10;
-    margin-bottom: 60px;
+    margin-bottom: clamp(30px, 8vh, 60px);
 }
 
 .tedx-logo {
-    font-size: 2.5rem;
-    font-weight: 900;
-    letter-spacing: -1px;
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 5px;
 }
 
 .tedx-logo span {
@@ -35,36 +42,33 @@
 }
 
 .tagline {
-    font-size: 0.9rem;
+    font-size: clamp(0.7rem, 2vw, 1rem);
     text-transform: uppercase;
-    letter-spacing: 4px;
-    color: #888;
-    margin-top: 5px;
+    letter-spacing: clamp(2px, 1vw, 6px);
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 300;
 }
 
 /* Slider Container */
 .slider-wrapper {
     position: relative;
     width: 100%;
-    height: 70vh;
+    height: 65vh;
     display: flex;
     align-items: center;
     justify-content: center;
     transform-style: preserve-3d;
     cursor: grab;
-    min-height: 550px;
-}
-
-.slider-wrapper:active {
-    cursor: grabbing;
+    margin-top: 20px;
 }
 
 /* The 3D Ring */
 .ring {
     position: relative;
-    width: 280px;
-    height: 380px;
+    width: var(--card-width);
+    height: var(--card-height);
     transform-style: preserve-3d;
+    will-change: transform;
 }
 
 /* Individual Cards */
@@ -72,31 +76,28 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #111;
-    border-radius: 8px;
-    overflow: hidden;
-    backface-visibility: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: var(--transition);
+    transform-style: preserve-3d;
     cursor: pointer;
+    transition: var(--transition-smooth);
 }
 
 .card:hover {
-    border-color: var(--ted-red);
     transform: scale(1.05);
-    z-index: 100;
+    z-index: 2000 !important;
 }
 
 .card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(40%) contrast(110%);
-    transition: var(--transition);
+    border-radius: 12px;
+    filter: brightness(0.9) contrast(1.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card:hover img {
-    filter: grayscale(0%) contrast(100%);
+    filter: brightness(1) contrast(1);
+    border-color: var(--ted-red);
 }
 
 .card-info {
@@ -105,21 +106,24 @@
     left: 0;
     width: 100%;
     padding: 20px;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.95));
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
     text-align: left;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 .card-info h3 {
-    font-size: 1.1rem;
-    color: var(--ted-red);
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    color: var(--text-white);
     text-transform: uppercase;
     margin-bottom: 2px;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .card-info p {
-    font-size: 0.8rem;
-    color: #ccc;
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    color: var(--ted-red);
+    font-weight: 600;
 }
 
 /* Modal / Detail View */
@@ -129,33 +133,31 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 9999;
     opacity: 0;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
 }
 
 .detail-card {
-    background: #0a0a0a;
-    width: 90%;
-    max-width: 900px;
-    height: auto;
-    max-height: 85vh;
-    border: 1px solid var(--ted-gray);
-    border-radius: 16px;
+    background: #080808;
+    width: 95%;
+    max-width: 1000px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
     display: flex;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+    max-height: 90vh;
 }
 
 .detail-img-side {
     flex: 1;
-    min-height: 400px;
-    background: var(--ted-black);
+    background: #000;
 }
 
 .detail-img-side img {
@@ -166,60 +168,64 @@
 
 .detail-info-side {
     flex: 1.2;
-    padding: 50px;
+    padding: clamp(30px, 5vw, 60px);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: left;
+    background: radial-gradient(circle at top right, rgba(235, 0, 40, 0.05), transparent);
+    overflow-y: auto;
 }
 
-.detail-info-side .speaker-label {
+.speaker-label {
     color: var(--ted-red);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     margin-bottom: 10px;
 }
 
 .detail-info-side h2 {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 6vw, 3.5rem);
     margin-bottom: 15px;
-    line-height: 1;
+    line-height: 0.9;
+    font-weight: 900;
+    letter-spacing: -1px;
 }
 
 .detail-info-side .topic {
-    font-size: 1.2rem;
-    font-weight: 300;
-    color: #ddd;
-    margin-bottom: 25px;
-    border-left: 3px solid var(--ted-red);
-    padding-left: 20px;
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-weight: 500;
+    color: #eee;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--ted-red);
+    padding-left: 15px;
 }
 
 .detail-info-side .bio {
-    color: #888;
+    color: #999;
     line-height: 1.6;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    margin-bottom: 30px;
 }
 
 .close-btn {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
-    font-size: 2rem;
+    font-size: 1.5rem;
     cursor: pointer;
     z-index: 10;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: var(--transition);
+    transition: var(--transition-smooth);
 }
 
 .close-btn:hover {
@@ -233,93 +239,47 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(circle, rgba(235, 0, 40, 0.1) 0%, transparent 70%);
-    z-index: -1;
+    width: min(1200px, 150vw);
+    height: min(1200px, 150vw);
+    background: radial-gradient(circle, rgba(235, 0, 40, 0.12) 0%, transparent 70%);
+    z-index: 0;
     filter: blur(80px);
     pointer-events: none;
 }
 
-/* Responsive Design */
+/* Responsive mastery */
+@media (max-width: 1024px) {
+    :root {
+        --card-width: 260px;
+        --card-height: 360px;
+    }
+    .detail-card { width: 90%; }
+}
+
 @media (max-width: 768px) {
-    .tedx-logo {
-        font-size: 2rem;
+    :root {
+        --card-width: 220px;
+        --card-height: 320px;
     }
-
-    .slider-wrapper {
-        height: auto;
-        min-height: 300px;
-    }
-
-    .ring {
-        width: 200px;
-        height: 280px;
-    }
-
     .detail-card {
         flex-direction: column;
-        width: 95%;
-        margin: 20px;
-        overflow-y: auto;
+        width: 95% !important;
+        max-height: 85vh;
     }
-
-    .detail-img-side {
-        min-height: 250px;
-    }
-
-    .detail-info-side {
-        padding: 30px;
-    }
-
-    .detail-info-side h2 {
-        font-size: 1.8rem;
-    }
-
-    .detail-info-side .topic {
-        font-size: 1rem;
-    }
-
-    .bg-glow {
-        width: 500px;
-        height: 500px;
-    }
+    .detail-img-side { height: 450px; flex: none; }
+    .detail-info-side { padding: 30px 25px; }
+    .slider-wrapper { height: 50vh; min-height: 400px; }
 }
 
 @media (max-width: 480px) {
-    .header {
-        margin-bottom: 20px;
+    :root {
+        --card-width: 160px;
+        --card-height: 240px;
     }
-
-    .tedx-logo {
-        font-size: 1.5rem;
-    }
-
-    .tagline {
-        font-size: 0.7rem;
-        letter-spacing: 2px;
-    }
-
-    .slider-wrapper {
-        height: auto;
-        min-height: 250px;
-        padding: 20px 0;
-    }
-
-    .ring {
-        width: 160px;
-        height: 220px;
-    }
-
-    .detail-info-side {
-        padding: 20px;
-    }
-
-    .detail-info-side h2 {
-        font-size: 1.5rem;
-    }
-
-    .detail-info-side .bio {
-        font-size: 0.9rem;
-    }
-}
+    .speaker-slider-container { padding: 40px 15px 10px 15px; }
+    .detail-img-side { height: 380px; }
+    .detail-info-side { padding: 25px 20px; }
+    .detail-info-side h2 { margin-bottom: 10px; }
+    .detail-info-side .topic { margin-bottom: 15px; }
+    .close-btn { top: 15px; right: 15px; width: 36px; height: 36px; }
+}

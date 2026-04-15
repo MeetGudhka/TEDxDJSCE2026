@@ -20,10 +20,17 @@ const SpeakerSlider = () => {
     const modalOverlayRef = useRef(null);
     const closeBtnRef = useRef(null);
 
+    // Helper to get radius based on screen width
+    const getRingRadius = (width) => {
+        if (width < 480) return 220;
+        if (width < 768) return 320;
+        if (width < 1024) return 400;
+        return 500;
+    };
+
     const rotationRef = useRef(0);
-    // Track rotation using a ref for smooth updates
     const isDraggingRef = useRef(false);
-    const autoRotateRef = useRef(null);
+    const [radius, setRadius] = useState(getRingRadius(window.innerWidth));
     const [selectedSpeaker, setSelectedSpeaker] = useState(null);
 
     const speakers = [
@@ -84,10 +91,29 @@ const SpeakerSlider = () => {
     ];
 
     const count = speakers.length;
-    const radius = 500;
     const angleStep = 360 / count;
 
     useEffect(() => {
+        const handleResize = () => {
+            const nextRadius = getRingRadius(window.innerWidth);
+            setRadius(nextRadius);
+
+            // Update existing cards' 3D positions
+            const cards = ringRef.current?.querySelectorAll('.card');
+            if (cards) {
+                cards.forEach((card, i) => {
+                    gsap.to(card, {
+                        transformOrigin: `50% 50% ${-nextRadius}px`,
+                        z: nextRadius,
+                        duration: 0.4,
+                        ease: "power2.out"
+                    });
+                });
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+
         // Create 3D cards in the ring
         if (ringRef.current && ringRef.current.children.length === 0) {
             speakers.forEach((speaker, i) => {
@@ -127,7 +153,9 @@ const SpeakerSlider = () => {
                 rotationRef.current += 0.1; // Reduced auto-rotation speed
                 gsap.set(ringRef.current, { rotationY: rotationRef.current });
                 // Keep the proxy in sync so dragging resumes correctly
-                gsap.set(proxy, { x: rotationRef.current / 0.25 });
+                if (proxyInstanceRef.current) {
+                    gsap.set(proxyInstanceRef.current.target, { x: rotationRef.current / 0.25 });
+                }
             }
         };
         gsap.ticker.add(rotateTicker);
@@ -137,7 +165,7 @@ const SpeakerSlider = () => {
         proxy.style.display = "none";
         document.body.appendChild(proxy);
 
-        Draggable.create(proxy, {
+        const draggables = Draggable.create(proxy, {
             trigger: sliderWrapperRef.current,
             type: "x",
             inertia: true,
@@ -159,9 +187,14 @@ const SpeakerSlider = () => {
             }
         });
 
+        // Store draggable for syncing
+        const proxyInstanceRef = { current: draggables[0] };
+
         return () => {
+            window.removeEventListener('resize', handleResize);
             gsap.ticker.remove(rotateTicker);
             if (proxy.parentNode) proxy.parentNode.removeChild(proxy);
+            if (draggables[0]) draggables[0].kill();
         };
     }, []);
 
