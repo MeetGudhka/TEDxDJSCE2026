@@ -11,7 +11,7 @@
     width: 100%;
     background-color: var(--ted-black);
     color: var(--text-white);
-    padding: 60px 20px;
+    padding: 120px 20px;
     overflow: hidden;
     perspective: 1500px;
 }
@@ -21,7 +21,7 @@
     position: relative;
     text-align: center;
     z-index: 10;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
 }
 
 .tedx-logo {
@@ -46,13 +46,13 @@
 .slider-wrapper {
     position: relative;
     width: 100%;
-    height: 60vh;
+    height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
     transform-style: preserve-3d;
     cursor: grab;
-    min-height: 400px;
+    min-height: 550px;
 }
 
 .slider-wrapper:active {
@@ -105,7 +105,7 @@
     left: 0;
     width: 100%;
     padding: 20px;
-    background: linear-gradient(transparent, rgba(0,0,0,0.95));
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.95));
     text-align: left;
 }
 
