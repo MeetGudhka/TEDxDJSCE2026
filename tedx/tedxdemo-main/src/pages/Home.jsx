@@ -3,6 +3,7 @@ import videoBgLaptop from '../assets/Final-laptop-video.mp4';
 import videoBgMobile from '../assets/Final-mobile-video.mp4';
 import ComingSoon from '../components/ComingSoon';
 import CountdownTimer from '../components/CountdownTimer';
+import SpeakerSlider from '../components/SpeakerSlider';
 import './Home.css';
 
 const Home = () => {
@@ -42,6 +43,7 @@ const Home = () => {
             {/* Main Content Section */}
             <div className="relative z-10 pb-20 pt-5 space-y-20">
                 <ComingSoon />
+                <SpeakerSlider />
                 <div className="px-4 md:px-8">
                     <CountdownTimer targetDate="2026-04-21T09:00:00" />
                 </div>
