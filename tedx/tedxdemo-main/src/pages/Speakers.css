@@ -39,7 +39,7 @@
 /* Year Dropdown */
 .year-selector {
     position: relative;
-    z-index: 100;
+    z-index: 40;
 }
 
 .year-selector .dropdown {
@@ -72,7 +72,7 @@
     background: #111;
     border: 1px solid #EB0028;
     display: none;
-    z-index: 100;
+    z-index: 40;
     border-radius: 4px;
     overflow: hidden;
     margin-top: 5px;
@@ -87,6 +87,7 @@
     color: #aaa;
     font-weight: 500;
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .year-selector .dropdown-option:hover {
@@ -330,9 +331,10 @@
 
 .mobile-speaker-card img {
     width: 100%;
-    height: 350px;
-    object-fit: cover;
-    object-position: top;
+    height: auto;
+    object-fit: contain;
+    background: #000;
+    display: block;
 }
 
 .mobile-speaker-details {

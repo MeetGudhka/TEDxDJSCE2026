@@ -316,9 +316,9 @@ const Speakers = () => {
                             {currentYear === '25-26' ? '25 - 26' : currentYear === '24-25' ? '24 - 25' : '23 - 24'}
                         </div>
                         <div className="dropdown-list">
-                            <div className="dropdown-option" onClick={() => changeYear('25-26')}>25 - 26</div>
-                            <div className="dropdown-option" onClick={() => changeYear('24-25')}>24 - 25</div>
-                            <div className="dropdown-option" onClick={() => changeYear('23-24')}>23 - 24</div>
+                            <div className="dropdown-option" onClick={(e) => { e.stopPropagation(); changeYear('25-26'); }}>25 - 26</div>
+                            <div className="dropdown-option" onClick={(e) => { e.stopPropagation(); changeYear('24-25'); }}>24 - 25</div>
+                            <div className="dropdown-option" onClick={(e) => { e.stopPropagation(); changeYear('23-24'); }}>23 - 24</div>
                         </div>
                     </div>
                 </div>
@@ -333,8 +333,9 @@ const Speakers = () => {
                         let zIndex = isPast ? i : (currentList.length + 1) - i;
                         
                         // Fix animation clipping: Force the currently flipping page to the very top
+                        // But keep it below the navbar (z-index 50)
                         if (animatingIndex === i) {
-                            zIndex = 99;
+                            zIndex = 45;
                         }
 
                         const isFrontCover = i === 0;
