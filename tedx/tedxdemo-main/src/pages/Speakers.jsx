@@ -1,7 +1,99 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import './Speakers.css';
+import hitenLulla from '../assets/Speakers/Hiten Lulla.png';
+import naveliDeshmukh from '../assets/Speakers/Naveli Deshmukh.png';
+import ratneshVerma from '../assets/Speakers/Ratnesh Verma.png';
+import rajThakkar from '../assets/Speakers/Raj Thakkar.png';
+import aryanGandhi from '../assets/Speakers/Aryan Gandhi.png';
+import drAjayPrabhakar from '../assets/Speakers/Dr. Ajay Prabhakar.png';
+import anupSoni from '../assets/Speakers/Anup Soni.png';
+import drHariVasudevan from '../assets/Speakers/Dr. Hari Vasudevan.png';
+import jagjyotSingh from '../assets/Speakers/Jagjyot Singh.png';
 
 const speakersData = {
+    '25-26': [
+        {
+            id: 1,
+            name: 'Anup Soni',
+            role: 'Social Awareness Through Media',
+            image: anupSoni,
+            imageFallback: anupSoni,
+            bio: "Anup Soni is a renowned actor and television host, best known for his impactful role as the host of Crime Patrol. Through his work, he has raised awareness about real-life social issues and brought important conversations to mainstream audiences.",
+            social: {}
+        },
+        {
+            id: 2,
+            name: 'Jagjyot Singh',
+            role: 'Mindset, Growth & Modern Challenges',
+            image: jagjyotSingh,
+            imageFallback: jagjyotSingh,
+            bio: "Jagjyot Singh is an internet personality known for his engaging content around mindset, personal growth, and modern-day challenges. Through his digital presence, he connects with a wide audience and inspires individuals to think differently and take action in their lives.",
+            social: {}
+        },
+        {
+            id: 3,
+            name: 'Hiten Lulla',
+            role: 'Digital Transformation & Storytelling',
+            image: hitenLulla,
+            imageFallback: hitenLulla,
+            bio: "Hiten Lulla is a dynamic entrepreneur and business leader known for his innovative approach in the media and entertainment industry. With a strong background in digital transformation and storytelling, he has played a key role in shaping modern content experiences and engaging audiences at scale.",
+            social: {}
+        },
+        {
+            id: 4,
+            name: 'Raj Thakkar',
+            role: 'Beverage Brand Building & Consumer Trends',
+            image: rajThakkar,
+            imageFallback: rajThakkar,
+            bio: "Raj Thakkar is a founder of DRNK, a fast-growing beverage brand redefining the way people experience drinks. His entrepreneurial journey reflects creativity, brand-building excellence, and a deep understanding of consumer trends.",
+            social: {}
+        },
+        {
+            id: 5,
+            name: 'Aryan Thakkar',
+            role: 'Entrepreneurship & Innovation',
+            image: aryanGandhi,
+            imageFallback: aryanGandhi,
+            bio: "Aryan Thakkar is a founder of DRNK, a fast-growing beverage brand redefining the way people experience drinks. His entrepreneurial journey reflects creativity, brand-building excellence, and a deep understanding of consumer trends.",
+            social: {}
+        },
+        {
+            id: 6,
+            name: 'Naveli Deshmukh',
+            role: 'Youth Empowerment & Social Impact',
+            image: naveliDeshmukh,
+            imageFallback: naveliDeshmukh,
+            bio: "Naveli Deshmukh is an emerging voice in the space of youth empowerment and social impact. Through her work, she focuses on inspiring young individuals to pursue purpose-driven careers and contribute meaningfully to society.",
+            social: {}
+        },
+        {
+            id: 7,
+            name: 'Dr. Hari Vasudevan',
+            role: 'Education Leadership & Innovation',
+            image: drHariVasudevan,
+            imageFallback: drHariVasudevan,
+            bio: "Dr. Hari Vasudevan is the Principal of Dwarkadas J. Sanghvi College of Engineering and a respected academician. Known for his leadership and vision in education, he has been instrumental in fostering innovation, research, and holistic development among students.",
+            social: {}
+        },
+        {
+            id: 8,
+            name: 'Dr. Ajay Prabhakar',
+            role: 'Healthcare Innovation & Patient Care',
+            image: drAjayPrabhakar,
+            imageFallback: drAjayPrabhakar,
+            bio: "Dr. Ajay Prabhakar is a distinguished professional known for his contributions in the field of medicine and healthcare innovation. With years of experience and research, he has been actively involved in improving patient care and advancing medical practices.",
+            social: {}
+        },
+        {
+            id: 9,
+            name: 'Ratnesh Verma',
+            role: 'Last-Mile Logistics Innovation',
+            image: ratneshVerma,
+            imageFallback: ratneshVerma,
+            bio: "Ratnesh Verma is the CEO of Pidge, a logistics and delivery solutions company revolutionizing last-mile delivery. With expertise in operations and scalable business models, he is driving innovation in urban logistics and building efficient delivery ecosystems.",
+            social: {}
+        }
+    ],
     '24-25': [
         {
             id: 1,
@@ -180,129 +272,162 @@ const speakersData = {
 };
 
 const Speakers = () => {
-    const [currentYear, setCurrentYear] = useState('24-25');
-    const [hoveredSpeaker, setHoveredSpeaker] = useState(null);
-    const [selectedSpeaker, setSelectedSpeaker] = useState(null);
+    const [currentYear, setCurrentYear] = useState('25-26');
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [animatingIndex, setAnimatingIndex] = useState(null);
     const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
 
-    const handleMouseEnter = (speaker) => {
-        setHoveredSpeaker(speaker);
+    const currentList = speakersData[currentYear] || [];
+
+    const changeYear = (year) => {
+        setCurrentYear(year);
+        setCurrentIndex(0); // Reset book to start
+        setAnimatingIndex(null);
+        setIsYearDropdownOpen(false);
     };
 
-    const handleMouseLeave = () => {
-        setHoveredSpeaker(null);
+    const nextSpeaker = () => {
+        if (currentIndex <= currentList.length) {
+            setAnimatingIndex(currentIndex);
+            setCurrentIndex(prev => prev + 1);
+            setTimeout(() => setAnimatingIndex(null), 900);
+        }
     };
 
-    const openPanel = (speaker) => {
-        setSelectedSpeaker(speaker);
-    };
-
-    const closePanel = () => {
-        setSelectedSpeaker(null);
+    const prevSpeaker = () => {
+        if (currentIndex > 0) {
+            setAnimatingIndex(currentIndex - 1);
+            setCurrentIndex(prev => prev - 1);
+            setTimeout(() => setAnimatingIndex(null), 900);
+        }
     };
 
     return (
-        <div className="speakers-interactive">
-            <div className="speakers-interactive__header">
-                <div className="rectangle"></div>
-                <h1>Meet Our Speakers</h1>
+        <div className="speakers-page">
+            <div className="speakers-header">
+                <div className="header-title">
+                    <div className="rectangle"></div>
+                    <h1>Meet Our Speakers</h1>
+                </div>
 
-                <div className="speakers-interactive__year-selector">
+                <div className="year-selector">
                     <div className={`dropdown ${isYearDropdownOpen ? 'active' : ''}`} onClick={() => setIsYearDropdownOpen(!isYearDropdownOpen)}>
-                        <div className="dropdown-selected">{currentYear === '24-25' ? '24 - 25' : '23 - 24'}</div>
+                        <div className="dropdown-selected">
+                            {currentYear === '25-26' ? '25 - 26' : currentYear === '24-25' ? '24 - 25' : '23 - 24'}
+                        </div>
                         <div className="dropdown-list">
-                            <div className="dropdown-option" onClick={() => setCurrentYear('24-25')}>24 - 25</div>
-                            <div className="dropdown-option" onClick={() => setCurrentYear('23-24')}>23 - 24</div>
+                            <div className="dropdown-option" onClick={() => changeYear('25-26')}>25 - 26</div>
+                            <div className="dropdown-option" onClick={() => changeYear('24-25')}>24 - 25</div>
+                            <div className="dropdown-option" onClick={() => changeYear('23-24')}>23 - 24</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="speakers-split">
-                <div className="speakers-list-col">
-                    {speakersData[currentYear].map((speaker, index) => (
-                        <div
-                            key={speaker.id}
-                            className={`speaker-list-item ${hoveredSpeaker?.id === speaker.id ? 'active' : ''}`}
-                            onMouseEnter={() => handleMouseEnter(speaker)}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => openPanel(speaker)}
-                        >
-                            <span className="speaker-list-number">{String(index + 1).padStart(2, '0')}</span>
-                            <div className="speaker-list-info">
-                                <h3 className="speaker-list-name">{speaker.name}</h3>
-                                <p className="speaker-list-role">{speaker.role}</p>
-                            </div>
-                            <span className="speaker-list-arrow">→</span>
-                        </div>
-                    ))}
-                </div>
+            {/* Desktop 3D Book Layout */}
+            <div className="book-container">
+                <div className="book">
+                    {/* Entire Book as a series of Flips (N+1 pages) */}
+                    {Array.from({ length: currentList.length + 1 }).map((_, i) => {
+                        const isPast = i < currentIndex;
+                        let zIndex = isPast ? i : (currentList.length + 1) - i;
+                        
+                        // Fix animation clipping: Force the currently flipping page to the very top
+                        if (animatingIndex === i) {
+                            zIndex = 99;
+                        }
 
-                <div className="speakers-preview-col" id="speakers-preview">
-                    {!hoveredSpeaker && (
-                        <div className="speakers-preview-default">
-                            <img src="/res/logo.png" alt="TEDx DJSCE" onError={(e) => e.target.style.display = 'none'} />
-                            <p>Hover over a speaker</p>
-                        </div>
-                    )}
+                        const isFrontCover = i === 0;
+                        const isBackCover = i === currentList.length;
 
-                    {hoveredSpeaker && (
-                        <div className="speaker-preview-image-container visible" onClick={() => openPanel(hoveredSpeaker)}>
-                            <img
-                                src={hoveredSpeaker.image}
-                                alt={hoveredSpeaker.name}
-                                onError={(e) => { e.target.src = hoveredSpeaker.imageFallback; }}
-                            />
-                            <div className="speaker-preview-overlay"></div>
-                            <div className="speaker-preview-label">
-                                <h3>{hoveredSpeaker.name}</h3>
-                                <p>{hoveredSpeaker.role}</p>
+                        return (
+                            <div 
+                                key={`flip-div-${i}`} 
+                                className={`book-page ${isPast ? 'flipped' : ''}`}
+                                style={{ zIndex }}
+                            >
+                                {/* Front Face: Right Side stack */}
+                                <div className="page-front" onClick={nextSpeaker}>
+                                    {isFrontCover ? (
+                                        <div className="page-content right-page cover-page">
+                                            <img src="/front-back.png" alt="Front Cover" className="cover-image" />
+                                            <div className="page-nav hint-next">Open Book ➔</div>
+                                        </div>
+                                    ) : (
+                                        <div className="page-content right-page text-page">
+                                            <div className="speaker-details">
+                                                <p className="speaker-role">{currentList[i-1].role}</p>
+                                                <h2 className="speaker-name">{currentList[i-1].name}</h2>
+                                                <div className="divider"></div>
+                                                <div className="speaker-bio">
+                                                    {currentList[i-1].bio.split('\n\n').map((p, pIdx) => <p key={pIdx}>{p}</p>)}
+                                                </div>
+                                                {currentList[i-1].social && Object.keys(currentList[i-1].social).length > 0 && (
+                                                    <div className="social-links">
+                                                        {currentList[i-1].social.linkedin && <a href={currentList[i-1].social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>}
+                                                        {currentList[i-1].social.instagram && <a href={currentList[i-1].social.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="page-nav hint-next">Click to Flip ➔</div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Back Face: Left Side stack */}
+                                <div className="page-back" onClick={prevSpeaker}>
+                                    {isBackCover ? (
+                                        <div className="page-content left-page cover-page">
+                                            <img src="/front-back.png" alt="Back Cover" className="cover-image" />
+                                            <div className="page-nav hint-prev">⬅ Close Book</div>
+                                        </div>
+                                    ) : (
+                                        <div className="page-content left-page">
+                                            <div className="speaker-image-wrapper">
+                                                <img 
+                                                    src={currentList[i].image} 
+                                                    alt={currentList[i].name} 
+                                                    onError={(e) => { e.target.src = currentList[i].imageFallback; }}
+                                                />
+                                            </div>
+                                            <div className="page-nav hint-prev">⬅ Click to Flip</div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                            <div className="speaker-preview-cta">
-                                View Profile →
-                            </div>
-                        </div>
-                    )}
+                        );
+                    })}
                 </div>
             </div>
 
-            <div className={`speaker-panel-backdrop ${selectedSpeaker ? 'open' : ''}`} onClick={closePanel}></div>
-
-            <div className={`speaker-detail-panel ${selectedSpeaker ? 'open' : ''}`}>
-                {selectedSpeaker && (
-                    <>
-                        <div className="panel-close-btn">
-                            <button onClick={closePanel}>×</button>
-                        </div>
-                        <div className="panel-content">
-                            <div className="panel-image-wrapper">
-                                <img
-                                    src={selectedSpeaker.image}
-                                    alt={selectedSpeaker.name}
-                                    onError={(e) => { e.target.src = selectedSpeaker.imageFallback; }}
-                                />
+            {/* Mobile Fallback View (Vertical List) */}
+            <div className="mobile-speakers-list">
+                <div className="mobile-speaker-card">
+                    <img src="/front-back.png" alt="Front Cover" />
+                </div>
+                {currentList.map(speaker => (
+                    <div key={speaker.id} className="mobile-speaker-card">
+                        <img 
+                            src={speaker.image} 
+                            alt={speaker.name} 
+                            onError={(e) => { e.target.src = speaker.imageFallback; }} 
+                        />
+                        <div className="mobile-speaker-details">
+                            <p className="mobile-role">{speaker.role}</p>
+                            <h2>{speaker.name}</h2>
+                            <div className="divider"></div>
+                            <div className="speaker-bio">
+                                {speaker.bio.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
                             </div>
-                            <h2 className="panel-speaker-name">{selectedSpeaker.name}</h2>
-                            <p className="panel-speaker-role">{selectedSpeaker.role}</p>
-                            <div className="panel-divider"></div>
-                            <div className="panel-speaker-bio">
-                                {selectedSpeaker.bio.split('\n\n').map((p, i) => (
-                                    <p key={i}>{p}</p>
-                                ))}
-                            </div>
-                            {selectedSpeaker.social && Object.keys(selectedSpeaker.social).length > 0 && (
-                                <div className="panel-social-links">
-                                    {selectedSpeaker.social.linkedin && (
-                                        <a href={selectedSpeaker.social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                                    )}
-                                    {selectedSpeaker.social.instagram && (
-                                        <a href={selectedSpeaker.social.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
-                                    )}
+                            {speaker.social && Object.keys(speaker.social).length > 0 && (
+                                <div className="social-links">
+                                    {speaker.social.linkedin && <a href={speaker.social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>}
+                                    {speaker.social.instagram && <a href={speaker.social.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>}
                                 </div>
                             )}
                         </div>
-                    </>
-                )}
+                    </div>
+                ))}
             </div>
         </div>
     );
