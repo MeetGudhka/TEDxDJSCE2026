@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Speakers.css';
+import EventGallery from '../components/EventGallery';
 import hitenLulla from '../assets/Speakers/Hiten Lulla.png';
 import naveliDeshmukh from '../assets/Speakers/Naveli Deshmukh.png';
 import ratneshVerma from '../assets/Speakers/Ratnesh Verma.png';
@@ -430,6 +431,9 @@ const Speakers = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Speaker Gallery Section */}
+            <EventGallery />
         </div>
     );
 };

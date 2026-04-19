@@ -1,6 +1,6 @@
 import EventsHero from '../components/EventsHero';
 import MicTimeline from '../components/MicTimeline';
-import EventGallery from '../components/EventGallery';
+import PastEventsGallery from '../components/PastEventsGallery';
 import { StarsBackground } from '../components/ui/stars-background';
 import { ShootingStars } from '../components/ui/shooting-stars';
 
@@ -36,7 +36,7 @@ const Events = () => {
                 <MicTimeline />
 
                 {/* Gallery Section */}
-                <EventGallery />
+                <PastEventsGallery />
             </div>
         </div>
     );
