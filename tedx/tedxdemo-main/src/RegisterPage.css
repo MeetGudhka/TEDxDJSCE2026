@@ -1384,3 +1384,117 @@
   }
 
 }
+
+/* Registrations Closed UI */
+.registrations-closed-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  animation: fadeInClosed 1s ease-out forwards;
+}
+
+.closed-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(235, 0, 40, 0.2), transparent 70%);
+  z-index: 0;
+  animation: pulseClosed 4s infinite ease-in-out;
+}
+
+@keyframes pulseClosed {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+  50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.4; }
+}
+
+.closed-content {
+  position: relative;
+  z-index: 1;
+}
+
+.closed-icon-wrapper {
+  margin-bottom: 24px;
+  color: var(--red);
+  animation: scaleBounceClosed 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.closed-icon {
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0 0 10px rgba(235, 0, 40, 0.5));
+}
+
+@keyframes scaleBounceClosed {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.closed-headline {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.closed-divider {
+  width: 60px;
+  height: 3px;
+  background: var(--red);
+  margin: 0 auto 30px;
+  border-radius: 2px;
+  box-shadow: 0 0 10px var(--red);
+}
+
+.closed-message {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.7;
+  max-width: 400px;
+  margin: 0 auto 24px;
+}
+
+.closed-message strong {
+  color: var(--red);
+}
+
+.closed-subtext {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  max-width: 360px;
+  margin: 0 auto 35px;
+}
+
+.closed-footer-decor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.closed-footer-decor .dot {
+  width: 4px;
+  height: 4px;
+  background: var(--red);
+  border-radius: 50%;
+}
+
+@keyframes fadeInClosed {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

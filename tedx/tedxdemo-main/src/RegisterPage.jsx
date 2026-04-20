@@ -372,240 +372,29 @@ const RegisterPage = () => {
             <div className="form-inner">
               <h2 className="form-title">Registration</h2>
 
-              <div className="luxury-form">
-                {/* 1. Base Personal Info */}
-                {[
-                  { label: "Full Name", type: "text", field: "fullName" },
-                  { label: "Contact Number", type: "tel", field: "contact", inputMode: "numeric", pattern: "[0-9]*" },
-                  { label: "Email ID", type: "email", field: "email" },
-                ].map((field, i) => (
-                  <div className="field-wrapper" key={field.field} style={{ "--index": i }}>
-                    <input
-                      type={field.type}
-                      inputMode={field.inputMode || undefined}
-                      pattern={field.pattern || undefined}
-                      className={formData[field.field] ? "has-value" : ""}
-                      value={formData[field.field]}
-                      onChange={(e) => handleChange(field.field, e.target.value)}
-                    />
-                    <label>{field.label}</label>
-                    <div className="underline"></div>
-                    {/* Inline validation hints */}
-                    {field.field === 'contact' && formData.contact && !/^\d+$/.test(formData.contact) && (
-                      <p className="field-error">Please enter digits only</p>
-                    )}
-                    {field.field === 'email' && formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) && (
-                      <p className="field-error">Please enter a valid email</p>
-                    )}
+              <div className="registrations-closed-container">
+                <div className="closed-glow"></div>
+                <div className="closed-content">
+                  <div className="closed-icon-wrapper">
+                    <svg className="closed-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </div>
-                ))}
-
-                {/* 2. College Selection Toggle */}
-                <div className="radio-wrapper" style={{ "--index": 3 }}>
-                  <div className="radio-title">Select College</div>
-                  <div className="radio-group">
-                    <div className="radio-option">
-                      <input
-                        type="radio" id="col-djsce" name="college" value="djsce"
-                        checked={formData.collegeType === 'djsce'}
-                        onChange={(e) => handleChange('collegeType', e.target.value)}
-                      />
-                      <label htmlFor="col-djsce" className="radio-label">D.J. Sanghvi</label>
-                    </div>
-                    <div className="radio-option">
-                      <input
-                        type="radio" id="col-other" name="college" value="other"
-                        checked={formData.collegeType === 'other'}
-                        onChange={(e) => handleChange('collegeType', e.target.value)}
-                      />
-                      <label htmlFor="col-other" className="radio-label">Other</label>
-                    </div>
+                  <h3 className="closed-headline">Registrations Closed</h3>
+                  <div className="closed-divider"></div>
+                  <p className="closed-message">
+                    Thank you for the overwhelming response! We have reached our maximum seating capacity for <strong>The Quiet Threshold</strong>.
+                  </p>
+                  <p className="closed-subtext">
+                    We look forward to seeing the registered attendees soon. Follow our social media for highlights and future event announcements.
+                  </p>
+                  <div className="closed-footer-decor">
+                    <span>TEDx</span>
+                    <span className="dot"></span>
+                    <span>DJSCE</span>
                   </div>
                 </div>
-
-                {/* 3. Conditional College Info */}
-                {formData.collegeType === "djsce" && (
-                  <>
-                    <div className="field-wrapper scale-in" style={{ "--index": 0 }}>
-                      <select
-                        className={formData.branch ? "has-value" : ""}
-                        value={formData.branch}
-                        onChange={(e) => handleChange('branch', e.target.value)}
-                      >
-                        <option value="" disabled hidden></option>
-                        <option value="COMPS">COMPS</option>
-                        <option value="IT">IT</option>
-                        <option value="CSEDS">CSEDS</option>
-                        <option value="EXTC">EXTC</option>
-                        <option value="AIML">AIML</option>
-                        <option value="AIDS">AIDS</option>
-                        <option value="MECH">MECH</option>
-                        <option value="ICB">ICB</option>
-                      </select>
-                      <label>Branch</label>
-                      <div className="underline"></div>
-                    </div>
-
-                    {[
-                      { label: "Roll Number", type: "text", field: "rollNumber" },
-                      { label: "SAP ID", type: "text", field: "sapId", inputMode: "numeric", pattern: "[0-9]*" },
-                    ].map((field, i) => (
-                      <div className="field-wrapper scale-in" key={field.field} style={{ "--index": i + 1 }}>
-                        <input
-                          type={field.type}
-                          inputMode={field.inputMode || undefined}
-                          pattern={field.pattern || undefined}
-                          className={formData[field.field] ? "has-value" : ""}
-                          value={formData[field.field]}
-                          onChange={(e) => handleChange(field.field, e.target.value)}
-                        />
-                        <label>{field.label}</label>
-                        <div className="underline"></div>
-                      </div>
-                    ))}
-                  </>
-                )}
-
-                {formData.collegeType === "other" && [
-                  { label: "College Name", type: "text", field: "collegeName" },
-                ].map((field, i) => (
-                  <div className="field-wrapper scale-in" key={field.field} style={{ "--index": 0 }}>
-                    <input
-                      type={field.type}
-                      className={formData[field.field] ? "has-value" : ""}
-                      value={formData[field.field]}
-                      onChange={(e) => handleChange(field.field, e.target.value)}
-                    />
-                    <label>{field.label}</label>
-                    <div className="underline"></div>
-                  </div>
-                ))}
-
-                {/* 4. Payment Section (Appears ONLY if forms filled) */}
-                {isPersonalInfoFilled() && (
-                  <div className="payment-section scale-in">
-                    <div className="section-divider">
-                      <span>Payment Details</span>
-                    </div>
-
-                    <div className="payment-qr-card">
-                      <div className="payment-qr-head">
-                        <span className="payment-qr-title">Scan QR To Pay</span>
-                        <span className="payment-qr-subtitle">Use any UPI app</span>
-                      </div>
-                      <img
-                        src="/kartik_qr.jpeg"
-                        alt="TEDxDJSCE payment QR"
-                        className="payment-qr-image"
-                        loading="lazy"
-                      />
-                      <div className="upi-copy-row">
-                        <div className="upi-copy-text-wrap">
-                          <span className="upi-copy-label">UPI ID</span>
-                          <span className="upi-copy-id">{UPI_ID}</span>
-                        </div>
-                        <button
-                          type="button"
-                          className={`upi-copy-btn ${isUpiCopied ? "copied" : ""}`}
-                          onClick={copyUpiId}
-                          aria-label="Copy UPI ID"
-                        >
-                          {isUpiCopied ? "Copied" : "Copy"}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="ticket-selector" style={{ "--index": 1 }}>
-                      <div className="ticket-title">Select Pass Type</div>
-                      <div className="ticket-options">
-                        {TICKET_OPTIONS.map((option) => (
-                          <button
-                            type="button"
-                            key={option.value}
-                            className={`ticket-option-btn ${formData.ticketType === option.value ? "active" : ""}`}
-                            onClick={() => handleTicketSelect(option.value)}
-                          >
-                            <span>{option.label}</span>
-                            <strong>Rs. {option.amount}</strong>
-                          </button>
-                        ))}
-                      </div>
-                      {formData.ticketType && (
-                        <p className="selected-amount">Amount to pay: Rs. {formData.amount}</p>
-                      )}
-                    </div>
-
-                    <div className="field-wrapper" style={{ "--index": 1 }}>
-                      <input
-                        type="text"
-                        className={formData.senderName ? "has-value" : ""}
-                        value={formData.senderName}
-                        onChange={(e) => handleChange('senderName', e.target.value)}
-                      />
-                      <label>Sender Name</label>
-                      <div className="underline"></div>
-                      <p className="field-note">The name of the person from whose account the payment was made.</p>
-                    </div>
-
-                    {/* Image Upload Dropbox */}
-                    <div
-                      className="field-wrapper dropbox-wrapper"
-                      style={{ "--index": 3 }}
-                    >
-                      <div className="dropbox-header">
-                        <span className="static-label">Payment Screenshot</span>
-                        <button type="button" className="view-sample-btn" onClick={(e) => { e.preventDefault(); setShowSample(!showSample); }}>
-                          {showSample ? "Hide Sample" : "View Sample"}
-                        </button>
-                      </div>
-
-                      {showSample && (
-                        <div className="sample-image-container">
-                          <img src="/sample_image.jpg" alt="Sample payment screenshot" className="sample-image-preview" loading="lazy" />
-                          <p className="sample-hint">Please ensure Transaction ID and Amount are clearly visible.</p>
-                        </div>
-                      )}
-
-                      <div
-                        className={`dropbox-container ${isDragging ? 'dragging' : ''} ${screenshotPreview ? 'has-image' : ''}`}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        <input
-                          type="file"
-                          accept="image/*"
-                          ref={fileInputRef}
-                          onChange={handleFileChange}
-                          style={{ display: 'none' }}
-                        />
-
-                        {screenshotPreview ? (
-                          <div className="image-preview">
-                            <img src={screenshotPreview} alt="Preview" />
-                            <div className="remove-image-btn" onClick={removeImage}>✕</div>
-                          </div>
-                        ) : (
-                          <div className="dropbox-placeholder">
-                            <svg className="upload-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M7 16L12 11M12 11L17 16M12 11V21M20 16.7428C21.2215 15.734 22 14.2079 22 12.5C22 9.46243 19.5376 7 16.5 7C16.2815 7 16.0771 7.0128 15.8773 7.03752C14.6596 4.14811 11.8385 2 8.5 2C4.35786 2 1 5.35786 1 9.5C1 11.6667 1.918 13.626 3.4 14.9669" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                            <p>Drag & Drop or <span className="browse-text">Click to browse</span></p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <button onClick={handleSubmit} className="prime-button" disabled={isSubmitting || hasSubmitted}>
-                      <span>{hasSubmitted ? 'SUBMITTED \u2713' : isSubmitting ? 'SUBMITTING...' : 'RESERVE SEAT'}</span>
-                      <div className="button-blob"></div>
-                    </button>
-                    <p className="registration-note">
-                      Check your <strong>email</strong> after successful registration. If not found, please check your <strong>spam</strong> folder.
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
           </div>
