@@ -201,7 +201,7 @@ const PastEventsGallery = () => {
                         }}
                     >
                         Gallery Of {isMobile ? <br /> : ' '}
-                        <span style={{ color: '#dc2626' }}>Past Events</span>
+                        <span style={{ color: '#dc2626' }}>SECOND SIGHT</span>
                     </h2>
 
                     <p
