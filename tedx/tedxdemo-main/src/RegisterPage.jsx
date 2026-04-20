@@ -494,7 +494,7 @@ const RegisterPage = () => {
                         <span className="payment-qr-subtitle">Use any UPI app</span>
                       </div>
                       <img
-                        src="/kartik_qr.png"
+                        src="/kartik_qr.jpeg"
                         alt="TEDxDJSCE payment QR"
                         className="payment-qr-image"
                         loading="lazy"
