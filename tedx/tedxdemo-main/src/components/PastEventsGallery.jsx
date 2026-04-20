@@ -13,6 +13,7 @@ const GALLERY_DATA = [
     { id: 9, image: '/past_events/Img9.jpeg', title: "TEDxDJSCE" },
     { id: 10, image: '/past_events/Img10.jpeg', title: "TEDxDJSCE" },
     { id: 11, image: '/past_events/Img11.jpeg', title: "TEDxDJSCE" },
+    { id: 12, image: '/past_events/Img12.jpeg', title: "TEDxDJSCE" },
 ];
 
 // Individual Gallery Card
