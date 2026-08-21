@@ -82,7 +82,7 @@ const speakersData = {
             role: 'Healthcare Innovation & Patient Care',
             image: drAjayPrabhakar,
             imageFallback: drAjayPrabhakar,
-            bio: "Dr. Ajay Prabhakar is a distinguished professional known for his contributions in the field of medicine and healthcare innovation. With years of experience and research, he has been actively involved in improving patient care and advancing medical practices.",
+            bio: "Dr. Ajay Prabhakar is an internationally recognised author, researcher, and leadership advisor specialising in AI, leadership, and the future of work. A former United Nations professional and author of seven books, he also leads The Ananta Bharat Project, empowering youth through AI, education, and innovation.",
             social: {}
         },
         {
